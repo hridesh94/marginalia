@@ -19,26 +19,26 @@
 /* Layout: an annotated page. A main text column with short labels hanging in the left margin,
    and a working model of the reader beside the opening. */
 :root{
-  --bg:#F2F2F7;        /* the app's library background */
-  --surface:#FFFFFF;
-  --ink:#1C1C1E;
-  --muted:#6C6C72;
-  --rule:rgba(60,60,67,.16);
-  --accent:#0A84FF;    /* the app's one accent: selection and active states */
+  --bg:#F4F1EA;        /* the app's library background: warm paper */
+  --surface:#FFFDF8;
+  --ink:#1E1A16;
+  --muted:#6B645A;
+  --rule:rgba(30,26,22,.14);
+  --accent:#1D6A64;    /* the app's one accent, a deep teal: selection and active states */
   --accent-ink:#FFFFFF;
-  --mark:rgba(255,214,10,.55); /* yellow highlight, as in the reader */
-  --shadow:0 1px 2px rgba(0,0,0,.06),0 18px 50px rgba(28,28,30,.16);
+  --mark:rgba(242,201,76,.5); /* yellow highlight, as in the reader */
+  --shadow:0 1px 2px rgba(30,26,22,.06),0 18px 50px rgba(30,26,22,.16);
   --display:"Literata",Charter,"Iowan Old Style",Georgia,serif;
-  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --ui:system-ui,Roboto,"Segoe UI",Helvetica,Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --margin:11rem;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0E0E10; --surface:#1C1C1E; --ink:#F2F2F7; --muted:#9A9AA1; --rule:rgba(235,235,245,.14);
-  --accent:#3B9BFF; --accent-ink:#06121F; --mark:rgba(255,214,10,.38); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark } }
+  --bg:#141210; --surface:#1F1C19; --ink:#EEE8DE; --muted:#A29A8E; --rule:rgba(238,232,222,.14);
+  --accent:#6CC2B8; --accent-ink:#0E1F1D; --mark:rgba(242,201,76,.34); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0E0E10; --surface:#1C1C1E; --ink:#F2F2F7; --muted:#9A9AA1; --rule:rgba(235,235,245,.14);
-  --accent:#3B9BFF; --accent-ink:#06121F; --mark:rgba(255,214,10,.38); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark }
+  --bg:#141210; --surface:#1F1C19; --ink:#EEE8DE; --muted:#A29A8E; --rule:rgba(238,232,222,.14);
+  --accent:#6CC2B8; --accent-ink:#0E1F1D; --mark:rgba(242,201,76,.34); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark }
 
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -53,7 +53,7 @@ p{margin:0}
 header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px}
 .brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-family:var(--display);font-size:20px;font-weight:600}
 .brand svg{width:34px;height:34px;border-radius:9px;flex:none}
-.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s ease, background-color .15s ease}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s ease, background-color .15s ease}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);padding:14px 22px;font-size:16px}
 .btn-primary:hover{background:color-mix(in srgb,var(--accent) 88%,var(--ink))}
@@ -73,9 +73,9 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 
 /* the reader model */
 .demo{display:flex;flex-direction:column;align-items:center;gap:16px}
-.phone{--p-bg:#FFFFFF;--p-fg:#1C1C1E;--p-muted:#8E8E93;--p-weight:400;--p-mark:rgba(255,214,10,.55);
-  width:min(300px,82vw);aspect-ratio:300/610;max-width:100%;border-radius:44px;padding:11px;background:#1C1C1E;box-shadow:var(--shadow);position:relative;user-select:none;-webkit-user-select:none;touch-action:pan-y}
-.screen{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--p-bg);perspective:1400px;cursor:pointer}
+.phone{--p-bg:#FFFFFF;--p-fg:#1F1B16;--p-muted:#6B645A;--p-weight:400;--p-mark:rgba(242,201,76,.5);
+  width:min(300px,82vw);aspect-ratio:300/610;max-width:100%;border-radius:34px;padding:10px;background:#1E1A16;box-shadow:var(--shadow);position:relative;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.screen{position:relative;width:100%;height:100%;border-radius:25px;overflow:hidden;background:var(--p-bg);perspective:1400px;cursor:pointer}
 .sheet{position:absolute;inset:0;background:var(--p-bg);color:var(--p-fg);display:flex;flex-direction:column;padding:34px 20px 18px;transform-origin:left center;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:background-color .3s,color .3s}
 .sheet.top{z-index:2;box-shadow:0 0 24px rgba(0,0,0,.18)}
 .sheet .shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to left,rgba(0,0,0,.4),rgba(0,0,0,0) 70%)}
@@ -86,7 +86,7 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 .sheet mark{background:var(--p-mark);color:inherit;border-radius:2px;padding:0 1px}
 .sheet .ft{display:flex;justify-content:center;align-items:center;position:relative;font-size:11px;color:var(--p-muted);font-variant-numeric:tabular-nums;font-family:var(--ui)}
 .sheet .ft svg{position:absolute;right:0;width:16px;height:16px}
-.notch{position:absolute;top:19px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:12px;background:#1C1C1E;z-index:5}
+.notch{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:11px;height:11px;border-radius:50%;background:#14110E;box-shadow:inset 0 0 0 2px #2A2622;z-index:5} /* punch-hole camera */
 .hint{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
 .hint svg{width:16px;height:16px}
 .themes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:min(300px,82vw)}
@@ -170,7 +170,7 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
     <div class="wrap">
       <div>
         <h1>Apple-inspired ebook reader <em>for Android</em></h1>
-        <p class="lede">Marginalia brings the clean, quiet design of Apple Books to Android. It opens <b>EPUB, Kindle, PDF and comic</b> files, shows each book the way its publisher designed it, and turns pages like paper. Your books stay on your phone.</p>
+        <p class="lede">Marginalia takes the calm of Apple Books and gives it a look of its own on Android. It opens <b>EPUB, Kindle, PDF and comic</b> files, shows each book the way its publisher designed it, and turns pages like paper. Your books stay on your phone.</p>
         <div class="cta">
           <a class="btn btn-primary" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
@@ -224,9 +224,9 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
         <dt>Page turns</dt>
         <dd><h3>Pages turn like paper</h3><p>Tap the edge of the screen, or drag the page and it follows your finger. Let go early and it settles back into place. You can also choose Slide, Fade or no animation.</p></dd>
         <dt>Typography</dt>
-        <dd><h3>Every book looks the way it was designed</h3><p>Marginalia keeps the publisher's fonts, spacing, alignment and headings. You can still change the typeface, line spacing or alignment, one setting at a time. Choose <b>Book</b> to go back to the original.</p></dd>
+        <dd><h3>Every book looks the way it was designed</h3><p>Marginalia keeps the publisher's fonts, spacing, alignment and headings. You can still change the typeface, line spacing or alignment, one setting at a time. Choose <b>Book</b> to go back to the original. Comfortable spacing, hyphenation and line lengths are taken care of, and books with cramped lines are opened up a little.</p></dd>
         <dt>Themes</dt>
-        <dd><h3>Six themes for any light</h3><p><b>Original</b>, <b>Quiet</b> for reading in the dark, <b>Paper</b>, <b>Bold</b>, <b>Calm</b> and <b>Focus</b>. Add a faint paper grain or fibre texture so the page feels less like a screen. A built-in dimmer darkens the page without changing your screen brightness.</p></dd>
+        <dd><h3>Six themes, including E-ink</h3><p><b>Day</b>, <b>Sepia</b>, <b>Ink</b> for bold, high-contrast type, <b>Dusk</b> and <b>Night</b> for reading in the dark. <b>E-ink</b> reads like a dedicated e-reader: a low-glare grey page that is neither bright nor dark, crisp heavier text and instant page turns. A built-in dimmer darkens the page without changing your screen brightness.</p></dd>
         <dt>Highlights</dt>
         <dd><h3>Highlights, notes and bookmarks</h3><p>Press and hold any text and one simple menu appears: highlight it, add a note, look it up or copy it. Highlights come in four colours. Bookmarked pages show a ribbon, and everything you save is listed by chapter.</p></dd>
         <dt>Dictionary</dt>
@@ -252,7 +252,7 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
         <li><h3>Download</h3><p>Tap Download for Android on your phone. Marginalia.apk saves to your Downloads folder.</p></li>
         <li><h3>Open it</h3><p>Tap the finished download, or find Marginalia.apk in your Files app under Downloads.</p></li>
         <li><h3>Allow the install</h3><p>Android asks once whether your browser or Files app may install apps. Allow it, then tap Install.</p></li>
-        <li><h3>Add a book</h3><p>Open Marginalia and tap <b>Add book</b>. A short reading guide is already in your library.</p></li>
+        <li><h3>Add your books</h3><p>Open Marginalia and tap <b>Add books</b>. You can pick several files at once. A short reading guide is already in your library.</p></li>
       </ol>
       <div class="get">
         <a class="btn btn-primary" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">
@@ -283,12 +283,12 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
     {n:75, html:'<p>So she said to the frog, ‘Well, if you will bring me my ball, I will do all you ask.’</p><p>Then the frog put his head down, and dived deep under the water; and after a little while he came up again, with the ball in his mouth, and threw it on the edge of the spring. As soon as the young princess saw her ball, she ran to pick it up; and she was so overjoyed to have it in her hand again, that she never thought of the frog, but ran home with it as fast as she could.</p>'}
   ];
   const THEMES = [
-    {id:'original', name:'Original', bg:'#FFFFFF', fg:'#1C1C1E', muted:'#8E8E93', weight:400, mark:'rgba(255,214,10,.55)'},
-    {id:'quiet', name:'Quiet', bg:'#2C2C2E', fg:'#C7C7CC', muted:'#8E8E93', weight:400, mark:'rgba(255,214,10,.32)'},
-    {id:'paper', name:'Paper', bg:'#E9E9EB', fg:'#1C1C1E', muted:'#6E6E73', weight:400, mark:'rgba(255,214,10,.6)'},
-    {id:'bold', name:'Bold', bg:'#FFFFFF', fg:'#000000', muted:'#6E6E73', weight:600, mark:'rgba(255,214,10,.55)'},
-    {id:'calm', name:'Calm', bg:'#F1DDBF', fg:'#4A3B2A', muted:'#8A7560', weight:400, mark:'rgba(255,190,40,.5)'},
-    {id:'focus', name:'Focus', bg:'#F8F3D8', fg:'#2B2A22', muted:'#7A775F', weight:400, mark:'rgba(255,200,10,.5)'}
+    {id:'original', name:'Day', bg:'#FFFFFF', fg:'#1F1B16', muted:'#6B645A', weight:400, mark:'rgba(242,201,76,.5)'},
+    {id:'calm', name:'Sepia', bg:'#F2E6D0', fg:'#4B3A28', muted:'#6F5E4A', weight:400, mark:'rgba(232,180,60,.45)'},
+    {id:'eink', name:'E-ink', bg:'#E6E3DC', fg:'#141414', muted:'#55514B', weight:500, mark:'rgba(242,201,76,.55)'},
+    {id:'bold', name:'Ink', bg:'#FFFFFF', fg:'#000000', muted:'#5E5850', weight:600, mark:'rgba(242,201,76,.5)'},
+    {id:'quiet', name:'Dusk', bg:'#2B2926', fg:'#D6CFC4', muted:'#A39C91', weight:400, mark:'rgba(242,201,76,.3)'},
+    {id:'night', name:'Night', bg:'#121110', fg:'#A9A297', muted:'#8F887D', weight:400, mark:'rgba(242,201,76,.24)'}
   ];
   const phone = document.getElementById('phone'), screen = document.getElementById('screen'), themesEl = document.getElementById('themes');
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -341,7 +341,7 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
   themesEl.innerHTML = THEMES.map(t => `<button type="button" class="tile" data-id="${t.id}" aria-pressed="false" style="background:${t.bg};color:${t.fg}" aria-label="${t.name} theme"><b style="font-weight:${t.weight}">Aa</b><span>${t.name}</span></button>`).join('');
   themesEl.addEventListener('click', e => { const b = e.target.closest('.tile'); if(b) setTheme(THEMES.find(t => t.id===b.dataset.id)); });
   const prefersDark = () => { const a = document.documentElement.getAttribute('data-theme'); return a ? a==='dark' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); };
-  render(); setTheme(THEMES[prefersDark() ? 1 : 0]);
+  render(); setTheme(THEMES[prefersDark() ? 4 : 0]);
 })();
 </script>
 </body>
