@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marginalia for Android</title>
+<meta name="description" content="Marginalia is a calm ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's own typography, and turns pages like paper.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Marginalia for Android">
+<meta property="og:description" content="Marginalia is a calm ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's own typography, and turns pages like paper.">
+<meta property="og:url" content="https://hridesh94.github.io/marginalia/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 12 84 84'%3E%3Crect x='12' y='12' width='84' height='84' rx='18' fill='%231C1C1E'/%3E%3Crect x='35' y='29' width='38' height='50' rx='3.2' fill='%23F4F1E8'/%3E%3Cpath d='M64 29h6v15l-3-2.6-3 2.6z' fill='%230A84FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an annotated page. A main text column with short labels hanging in the left margin,
+   and a working model of the reader beside the opening. */
+:root{
+  --bg:#F2F2F7;        /* the app's library background */
+  --surface:#FFFFFF;
+  --ink:#1C1C1E;
+  --muted:#6C6C72;
+  --rule:rgba(60,60,67,.16);
+  --accent:#0A84FF;    /* the app's one accent: selection and active states */
+  --accent-ink:#FFFFFF;
+  --mark:rgba(255,214,10,.55); /* yellow highlight, as in the reader */
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 18px 50px rgba(28,28,30,.16);
+  --display:"Literata",Charter,"Iowan Old Style",Georgia,serif;
+  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --margin:11rem;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E0E10; --surface:#1C1C1E; --ink:#F2F2F7; --muted:#9A9AA1; --rule:rgba(235,235,245,.14);
+  --accent:#3B9BFF; --accent-ink:#06121F; --mark:rgba(255,214,10,.38); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E0E10; --surface:#1C1C1E; --ink:#F2F2F7; --muted:#9A9AA1; --rule:rgba(235,235,245,.14);
+  --accent:#3B9BFF; --accent-ink:#06121F; --mark:rgba(255,214,10,.38); --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.55); color-scheme:dark }
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent);text-underline-offset:.18em}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* header */
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-family:var(--display);font-size:20px;font-weight:600}
+.brand svg{width:34px;height:34px;border-radius:9px;flex:none}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s ease, background-color .15s ease}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);padding:14px 22px;font-size:16px}
+.btn-primary:hover{background:color-mix(in srgb,var(--accent) 88%,var(--ink))}
+.btn-small{background:var(--accent);color:var(--accent-ink);padding:8px 14px;font-size:14px}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:center;padding-block:40px 72px}
+.hero h1{font-size:clamp(40px,6.2vw,68px);line-height:1.04;font-weight:500;max-width:12ch}
+.hero h1 em{font-style:italic;font-weight:400}
+.lede{font-size:clamp(18px,2vw,20px);color:var(--muted);max-width:34rem;margin-top:22px}
+.lede b{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:32px}
+.cta .alt{font-size:15px}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:22px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.facts span{white-space:nowrap}
+
+/* the reader model */
+.demo{display:flex;flex-direction:column;align-items:center;gap:16px}
+.phone{--p-bg:#FFFFFF;--p-fg:#1C1C1E;--p-muted:#8E8E93;--p-weight:400;--p-mark:rgba(255,214,10,.55);
+  width:min(300px,82vw);aspect-ratio:300/610;max-width:100%;border-radius:44px;padding:11px;background:#1C1C1E;box-shadow:var(--shadow);position:relative;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.screen{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--p-bg);perspective:1400px;cursor:pointer}
+.sheet{position:absolute;inset:0;background:var(--p-bg);color:var(--p-fg);display:flex;flex-direction:column;padding:34px 20px 18px;transform-origin:left center;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:background-color .3s,color .3s}
+.sheet.top{z-index:2;box-shadow:0 0 24px rgba(0,0,0,.18)}
+.sheet .shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to left,rgba(0,0,0,.4),rgba(0,0,0,0) 70%)}
+.sheet .bt{font-family:var(--display);font-style:italic;font-size:11px;color:var(--p-muted);text-align:center;letter-spacing:.01em}
+.sheet .tx{flex:1;margin-top:16px;font-family:var(--display);font-size:14px;line-height:1.58;font-weight:var(--p-weight);text-align:justify;-webkit-hyphens:auto;hyphens:auto;overflow:hidden}
+.sheet .tx p+p{margin-top:.7em}
+.sheet .tx p.first::first-line{font-variant:small-caps;letter-spacing:.03em}
+.sheet mark{background:var(--p-mark);color:inherit;border-radius:2px;padding:0 1px}
+.sheet .ft{display:flex;justify-content:center;align-items:center;position:relative;font-size:11px;color:var(--p-muted);font-variant-numeric:tabular-nums;font-family:var(--ui)}
+.sheet .ft svg{position:absolute;right:0;width:16px;height:16px}
+.notch{position:absolute;top:19px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:12px;background:#1C1C1E;z-index:5}
+.hint{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.hint svg{width:16px;height:16px}
+.themes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:min(300px,82vw)}
+.tile{appearance:none;border:0;border-radius:10px;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;box-shadow:inset 0 0 0 1px var(--rule);font-family:var(--ui);padding:0}
+.tile b{font-family:var(--display);font-size:16px;font-weight:400;line-height:1}
+.tile span{font-size:9px;opacity:.8}
+.tile[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--accent)}
+
+/* sections */
+section.band{border-top:1px solid var(--rule)}
+section.band>.wrap{padding-block:72px}
+.sec-head{display:grid;grid-template-columns:var(--margin) minmax(0,1fr);gap:0 40px;align-items:baseline;margin-bottom:40px}
+.sec-head .label{grid-column:1;text-align:right}
+.sec-head h2{grid-column:2;font-size:clamp(28px,3.6vw,40px);line-height:1.12;max-width:20ch}
+.sec-head p:not(.label){grid-column:2;color:var(--muted);margin-top:14px;max-width:38rem}
+.notes{display:grid;grid-template-columns:var(--margin) minmax(0,1fr);gap:28px 40px;margin:0}
+.notes dt{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding-top:5px}
+.notes dd{margin:0;max-width:40rem;min-width:0}
+.notes dd h3{font-size:21px;line-height:1.3;margin-bottom:6px}
+.notes dd p{color:var(--muted)}
+.notes dd p b{color:var(--ink);font-weight:600}
+
+/* formats */
+.formats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
+.fmt{background:var(--surface);padding:22px 20px 24px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.fmt code{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink)}
+.fmt p{font-size:15px;color:var(--muted);line-height:1.45}
+.caveat{display:grid;grid-template-columns:var(--margin) minmax(0,1fr);gap:0 40px;margin-top:28px}
+.caveat p{grid-column:2;font-size:15px;color:var(--muted);max-width:42rem}
+
+/* install */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;counter-reset:step}
+.steps li{counter-increment:step;display:flex;flex-direction:column;gap:8px;min-width:0}
+.steps li::before{content:counter(step);font-family:var(--display);font-size:34px;line-height:1;color:var(--accent)}
+.steps h3{font-size:19px}
+.steps p{font-size:15px;color:var(--muted)}
+.get{margin-top:48px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.get .note{font-size:14px;color:var(--muted);max-width:30rem}
+
+footer{border-top:1px solid var(--rule)}
+footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted)}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr;gap:44px;padding-block:24px 56px}
+  .hero h1{max-width:14ch}
+  .formats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .sec-head,.notes,.caveat{grid-template-columns:1fr}
+  .sec-head .label,.sec-head h2,.sec-head p:not(.label),.caveat p{grid-column:1;text-align:left}
+  .sec-head h2{margin-top:10px}
+  .notes{gap:10px}
+  .notes dt{text-align:left;padding-top:18px}
+  .notes dt:first-of-type{padding-top:0}
+  section.band>.wrap{padding-block:56px}
+}
+@media (max-width:480px){
+  body{font-size:16px}
+  .formats,.steps{grid-template-columns:1fr}
+  header .btn-small{display:none}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Marginalia">
+      <svg viewBox="12 12 84 84" aria-hidden="true"><rect x="12" y="12" width="84" height="84" fill="#1C1C1E"/><rect x="35" y="29" width="38" height="50" rx="3.2" fill="#F4F1E8"/><g fill="#B9B4A8"><rect x="40" y="40" width="22" height="2.2" rx="1.1"/><rect x="40" y="46" width="28" height="2.2" rx="1.1"/><rect x="40" y="52" width="28" height="2.2" rx="1.1"/><rect x="40" y="58" width="28" height="2.2" rx="1.1"/><rect x="40" y="64" width="28" height="2.2" rx="1.1"/><rect x="40" y="70" width="17" height="2.2" rx="1.1"/></g><rect x="40" y="51" width="28" height="4.2" rx="1" fill="#FFD60A" opacity=".55"/><rect x="40" y="57" width="20" height="4.2" rx="1" fill="#FFD60A" opacity=".55"/><rect x="37.2" y="51" width="1.4" height="10.2" rx=".7" fill="#0A84FF"/><path d="M64 29h6v15l-3-2.6-3 2.6z" fill="#0A84FF"/></svg>
+      Marginalia
+    </a>
+    <a class="btn btn-small" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">Download</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label">Ebook reader for Android</p>
+        <h1 style="margin-top:14px">Every book you own, <em>set the way it was made.</em></h1>
+        <p class="lede">Marginalia opens <b>EPUB, Kindle, PDF and comic</b> files on your phone, keeps each publisher's own typography, and turns pages like paper. Your library stays on your phone.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            Download for Android
+          </a>
+          <a class="alt" href="#install">How to install</a>
+        </div>
+        <div class="facts"><span>Free</span><span>Android 7 and newer</span><span>About 7 MB</span><span>No account</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="phone" id="phone">
+          <div class="notch" aria-hidden="true"></div>
+          <div class="screen" id="screen" role="button" tabindex="0" aria-label="Sample page. Tap or press Enter to turn the page."></div>
+        </div>
+        <p class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v6M13 10a2 2 0 0 1 4 0v2M17 11a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L5 15a2 2 0 0 1 3-2.6l1 1"/></svg>Tap the page, or drag it, to turn it</p>
+        <div class="themes" role="group" aria-label="Reading themes" id="themes"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="formats-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Formats</p>
+        <h2 id="formats-h">Open the files you already have</h2>
+        <p>Marginalia looks inside each file to work out what it is, so a book saved as .zip or with no extension still opens. Anything that isn't EPUB is converted once, when you add it.</p>
+      </div>
+      <div class="formats">
+        <div class="fmt"><code>.epub</code><p>Opened as published, with embedded fonts decoded so they display.</p></div>
+        <div class="fmt"><code>.mobi .azw3</code><p>DRM-free Kindle books, with their images, links and contents.</p></div>
+        <div class="fmt"><code>.pdf</code><p>Pages exactly as printed, with text you can search and highlight.</p></div>
+        <div class="fmt"><code>.cbz</code><p>Comics page by page, with manga read right to left.</p></div>
+        <div class="fmt"><code>.fb2 .fbz</code><p>FictionBook files, including Cyrillic ones, with notes and poems kept.</p></div>
+        <div class="fmt"><code>.txt</code><p>Plain text split into chapters at headings like "Chapter I".</p></div>
+        <div class="fmt"><code>.html</code><p>Saved web pages and stories, with their own styles and images.</p></div>
+        <div class="fmt"><code>Open with</code><p>Tap a book in your Files app or a download and choose Marginalia.</p></div>
+      </div>
+      <div class="caveat"><p>Books protected with DRM can't be opened. That includes books bought from the Kindle store and Kindle KFX files. DRM-free Kindle files, such as ones from free libraries, work fine.</p></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Reading</p>
+        <h2 id="features-h">Quiet on the page, thorough underneath</h2>
+        <p>The screen shows only the text until you ask for more. A tap in the middle brings back the menu, the contents and your place in the book.</p>
+      </div>
+      <dl class="notes">
+        <dt>Page turns</dt>
+        <dd><h3>Pages flip like paper</h3><p>Tap the right or left edge, or drag the page and it follows your finger. Let go early to put it back. Slide, Fade and None are there if you prefer them.</p></dd>
+        <dt>Typography</dt>
+        <dd><h3>The book's own design</h3><p>Publisher fonts, spacing, alignment and headings show as they were made. Change the typeface, line spacing or alignment one at a time, and choose <b>Book</b> to go back.</p></dd>
+        <dt>Themes</dt>
+        <dd><h3>Six page colours</h3><p><b>Original</b>, <b>Quiet</b> for reading in the dark, <b>Paper</b>, <b>Bold</b>, <b>Calm</b> and <b>Focus</b>, plus a dimmer that darkens the page without touching your screen brightness.</p></dd>
+        <dt>Highlights</dt>
+        <dd><h3>Highlights, notes and bookmarks</h3><p>Press and hold to highlight in four colours, add a note, copy a quote or look up a word. A ribbon marks bookmarked pages, and everything is listed by chapter.</p></dd>
+        <dt>Progress</dt>
+        <dd><h3>Always know where you are</h3><p>See pages left in the chapter, how far through the book you are and an estimate of the time left based on how fast you read. Every book reopens at the exact spot you left it.</p></dd>
+        <dt>Android</dt>
+        <dd><h3>Made for your phone</h3><p>Turn pages with the volume keys, keep the screen on while you read, search the whole book, and share a highlighted quote to any app.</p></dd>
+        <dt>Privacy</dt>
+        <dd><h3>Your books stay on your phone</h3><p>There is no account and nothing is uploaded. The only thing that goes online is a word you choose to look up in the dictionary.</p></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="band" id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Install</p>
+        <h2 id="install-h">Install in about a minute</h2>
+        <p>Marginalia isn't in the Play Store. The download button always gets the newest version, straight from GitHub, with no account needed.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Download</h3><p>Tap Download for Android on your phone. Marginalia.apk saves to your Downloads.</p></li>
+        <li><h3>Open it</h3><p>Tap the finished download, or find Marginalia.apk in your Files app under Downloads.</p></li>
+        <li><h3>Allow the install</h3><p>Android asks once whether your browser or Files app may install apps. Allow it, then tap Install.</p></li>
+        <li><h3>Add a book</h3><p>Open Marginalia and tap <b>Add book</b>. A short reading guide is already in your library.</p></li>
+      </ol>
+      <div class="get">
+        <a class="btn btn-primary" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          Download for Android
+        </a>
+        <p class="note">New versions install over the old one and keep your library. Every version is listed on the <a href="https://github.com/hridesh94/marginalia/releases" target="_blank" rel="noopener">releases page</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Marginalia. Built on epub.js, pdf.js and foliate-js.</span>
+    <a href="https://github.com/hridesh94/marginalia" target="_blank" rel="noopener">Source on GitHub</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  // Real text: "The Frog-Prince", Brothers Grimm, tr. Edgar Taylor (public domain).
+  const PAGES = [
+    {n:72, html:'<p class="first">One fine evening a young princess put on her bonnet and clogs, and went out to take a walk by herself in a wood; and when she came to a cool spring of water, that rose in the midst of it, she sat herself down to rest a while.</p><p>Now she had a <mark>golden ball in her hand, which was her favourite plaything</mark>; and she was always tossing it up into the air, and catching it again as it fell. After a time she threw it up so high that she missed catching it as it fell; and the ball bounded away, and rolled along upon the ground, till at last it fell down into the spring.</p>'},
+    {n:73, html:'<p>The princess looked into the spring after her ball, but it was very deep, so deep that she could not see the bottom of it. Then she began to bewail her loss, and said, ‘Alas! if I could only get my ball again, I would give all my fine clothes and jewels, and everything that I have in the world.’</p><p>Whilst she was speaking, a frog put its head out of the water, and said, ‘Princess, why do you weep so bitterly?’</p><p>‘Alas!’ said she, ‘what can you do for me, you nasty frog? My golden ball has fallen into the spring.’</p>'},
+    {n:74, html:'<p>The frog said, ‘I want not your pearls, and jewels, and fine clothes; but if you will love me, and let me live with you and eat from off your golden plate, and sleep upon your bed, I will bring you your ball again.’</p><p>‘What nonsense,’ thought the princess, ‘this silly frog is talking! He can never even get out of the spring to visit me, though he may be able to get my ball for me, and therefore I will tell him he shall have what he asks.’</p>'},
+    {n:75, html:'<p>So she said to the frog, ‘Well, if you will bring me my ball, I will do all you ask.’</p><p>Then the frog put his head down, and dived deep under the water; and after a little while he came up again, with the ball in his mouth, and threw it on the edge of the spring. As soon as the young princess saw her ball, she ran to pick it up; and she was so overjoyed to have it in her hand again, that she never thought of the frog, but ran home with it as fast as she could.</p>'}
+  ];
+  const THEMES = [
+    {id:'original', name:'Original', bg:'#FFFFFF', fg:'#1C1C1E', muted:'#8E8E93', weight:400, mark:'rgba(255,214,10,.55)'},
+    {id:'quiet', name:'Quiet', bg:'#2C2C2E', fg:'#C7C7CC', muted:'#8E8E93', weight:400, mark:'rgba(255,214,10,.32)'},
+    {id:'paper', name:'Paper', bg:'#E9E9EB', fg:'#1C1C1E', muted:'#6E6E73', weight:400, mark:'rgba(255,214,10,.6)'},
+    {id:'bold', name:'Bold', bg:'#FFFFFF', fg:'#000000', muted:'#6E6E73', weight:600, mark:'rgba(255,214,10,.55)'},
+    {id:'calm', name:'Calm', bg:'#F1DDBF', fg:'#4A3B2A', muted:'#8A7560', weight:400, mark:'rgba(255,190,40,.5)'},
+    {id:'focus', name:'Focus', bg:'#F8F3D8', fg:'#2B2A22', muted:'#7A775F', weight:400, mark:'rgba(255,200,10,.5)'}
+  ];
+  const phone = document.getElementById('phone'), screen = document.getElementById('screen'), themesEl = document.getElementById('themes');
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const menuIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  const sheetHTML = p => `<div class="bt">The Frog-Prince</div><div class="tx">${p.html}</div><div class="ft"><span>${p.n}</span>${menuIcon}</div><div class="shade"></div>`;
+  let idx = 0, busy = false;
+  const top = document.createElement('div'), under = document.createElement('div');
+  top.className = 'sheet top'; under.className = 'sheet';
+  screen.append(under, top);
+  function render(){ top.innerHTML = sheetHTML(PAGES[idx]); under.innerHTML = sheetHTML(PAGES[(idx+1) % PAGES.length]); top.style.transform=''; top.style.opacity=''; top.querySelector('.shade').style.opacity='0'; }
+  function paint(q){ // q: 0 page flat, 1 page turned away
+    if(reduce){ top.style.opacity = String(1-q); return; }
+    top.style.transform = `rotateY(${-q*90}deg)`;
+    top.querySelector('.shade').style.opacity = String(Math.min(1, q*1.4));
+  }
+  function animate(from, to, ms){
+    return new Promise(res => { const t0 = performance.now(); const ease = t => 1-Math.pow(1-t,3);
+      const step = now => { const t = Math.min(1,(now-t0)/ms); paint(from+(to-from)*ease(t)); if(t<1) requestAnimationFrame(step); else res(); };
+      requestAnimationFrame(step); });
+  }
+  async function turn(from){
+    if(busy) return; busy = true;
+    await animate(from||0, 1, reduce ? 220 : 430*(1-(from||0)*0.7));
+    idx = (idx+1) % PAGES.length; render(); busy = false;
+  }
+  // drag to turn, following the finger
+  let drag = null;
+  screen.addEventListener('pointerdown', e => { if(busy) return; drag = {x:e.clientX, y:e.clientY, q:0, moved:false, id:e.pointerId}; });
+  screen.addEventListener('pointermove', e => {
+    if(!drag || e.pointerId!==drag.id) return;
+    const dx = e.clientX-drag.x, dy = e.clientY-drag.y;
+    if(!drag.moved){ if(Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return; drag.moved = true; try{ screen.setPointerCapture(e.pointerId); }catch(_){} }
+    drag.q = Math.max(0, Math.min(1, -dx / screen.clientWidth * 1.15)); paint(drag.q);
+  });
+  const end = async () => {
+    if(!drag) return; const d = drag; drag = null;
+    if(!d.moved){ turn(0); return; }
+    if(d.q > 0.28) turn(d.q); else { busy = true; await animate(d.q, 0, 200); busy = false; }
+  };
+  screen.addEventListener('pointerup', end); screen.addEventListener('pointercancel', end);
+  screen.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' ' || e.key==='ArrowRight'){ e.preventDefault(); turn(0); } });
+
+  // themes
+  function setTheme(t){
+    const s = phone.style;
+    s.setProperty('--p-bg', t.bg); s.setProperty('--p-fg', t.fg); s.setProperty('--p-muted', t.muted); s.setProperty('--p-weight', t.weight); s.setProperty('--p-mark', t.mark);
+    screen.style.background = t.bg;
+    themesEl.querySelectorAll('.tile').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id===t.id)));
+  }
+  themesEl.innerHTML = THEMES.map(t => `<button type="button" class="tile" data-id="${t.id}" aria-pressed="false" style="background:${t.bg};color:${t.fg}" aria-label="${t.name} theme"><b style="font-weight:${t.weight}">Aa</b><span>${t.name}</span></button>`).join('');
+  themesEl.addEventListener('click', e => { const b = e.target.closest('.tile'); if(b) setTheme(THEMES.find(t => t.id===b.dataset.id)); });
+  const prefersDark = () => { const a = document.documentElement.getAttribute('data-theme'); return a ? a==='dark' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); };
+  render(); setTheme(THEMES[prefersDark() ? 1 : 0]);
+})();
+</script>
+</body>
+</html>

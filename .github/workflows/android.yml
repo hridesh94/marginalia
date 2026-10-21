@@ -1,0 +1,118 @@
+name: Android APK
+
+on:
+  push:
+    paths:
+      - "reader/**"
+      - "android-app/**"
+      - ".github/workflows/android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write # lets signed builds publish a GitHub Release
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version codes continue from the 1.0.5 build released before the app moved to this repository,
+      # so new builds always install as updates.
+      - name: Set version
+        run: echo "MARGINALIA_VERSION_CODE=$((GITHUB_RUN_NUMBER + 10))" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: android-app/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle and sync Android project
+        run: npm run sync
+
+      - name: Decode release key
+        id: key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.MARGINALIA_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/marginalia-release.p12"
+            echo "MARGINALIA_KEYSTORE_PATH=$RUNNER_TEMP/marginalia-release.p12" >> "$GITHUB_ENV"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build signed release APK
+        if: steps.key.outputs.signed == 'true'
+        working-directory: android-app/android
+        env:
+          MARGINALIA_KEYSTORE_PASSWORD: ${{ secrets.MARGINALIA_KEYSTORE_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+          mkdir -p ../out && cp app/build/outputs/apk/release/app-release.apk "../out/marginalia-1.0.${MARGINALIA_VERSION_CODE}.apk"
+
+      - name: Build test APK (no signing secrets yet)
+        if: steps.key.outputs.signed != 'true'
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          mkdir -p ../out && cp app/build/outputs/apk/debug/app-debug.apk "../out/marginalia-test-1.0.${MARGINALIA_VERSION_CODE}.apk"
+          {
+            echo "### Test build"
+            echo "Signing secrets are not set, so this APK is signed with a throwaway key."
+            echo "It cannot install over a previous build; uninstalling first deletes your library."
+            echo "Add MARGINALIA_KEYSTORE_BASE64 and MARGINALIA_KEYSTORE_PASSWORD to get release builds that update in place."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Signed builds become a public GitHub Release, so anyone can download the app without a GitHub
+      # account from https://github.com/<owner>/<repo>/releases/latest/download/Marginalia.apk
+      - name: Publish GitHub release
+        if: steps.key.outputs.signed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="1.0.${MARGINALIA_VERSION_CODE}"
+          cp "out/marginalia-${VERSION}.apk" out/Marginalia.apk
+          {
+            echo "Marginalia ${VERSION} for Android."
+            echo
+            echo "Install: download **Marginalia.apk** below, open it on your phone and allow the install when Android asks."
+            echo "This version installs over earlier signed versions and keeps your library."
+            echo
+            echo "Changes: $(git log -1 --pretty=%s)"
+            echo
+            echo "SHA-256: \`$(sha256sum out/Marginalia.apk | cut -d' ' -f1)\`"
+          } > "$RUNNER_TEMP/notes.md"
+          gh release create "v${VERSION}" out/Marginalia.apk \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Marginalia ${VERSION}" --notes-file "$RUNNER_TEMP/notes.md" --latest
+          echo "### Released [Marginalia ${VERSION}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/v${VERSION})" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: marginalia-apk-${{ github.run_number }}
+          path: android-app/out/*.apk
+          if-no-files-found: error
+          retention-days: 30

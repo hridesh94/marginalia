@@ -1,0 +1,45 @@
+# Marginalia for Android
+
+Capacitor wrapper that turns the reader in `../reader/index.html` into an installable APK. The reader page stays the single source: `npm run build` wraps it into `www/`, swaps the CDN scripts and Google Fonts for bundled copies, and adds `src/native.js`, the bridge to Android.
+
+## Getting the APK
+
+Once release signing is set up (below), every signed build is published as a GitHub Release. The newest one is always at this permanent link, which works without a GitHub account:
+
+https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk
+
+Each run of **Android APK** in GitHub Actions also keeps its APK as a run artifact for 30 days (signed in to GitHub only). Builds made before the signing secrets exist are test builds and are not released.
+
+## Release signing (one-time)
+
+Builds only update in place when they are signed with the same key. Add two repository secrets under Settings → Secrets and variables → Actions:
+
+| Secret | Value |
+|---|---|
+| `MARGINALIA_KEYSTORE_BASE64` | The PKCS#12 keystore, base64-encoded on one line |
+| `MARGINALIA_KEYSTORE_PASSWORD` | Its password, used for both the store and the `marginalia` key |
+
+Without them the workflow still produces a test APK signed with a throwaway key. Each test APK has to be uninstalled before the next one installs, which deletes the library on the phone.
+
+Keep a backup of the keystore. If it's lost, future builds can't update the installed app.
+
+## What the Android build adds
+
+- Works offline: epub.js, JSZip, the fonts (Charis SIL for the Charter-style default, Literata, Gelasio for Georgia) and the format converters (foliate-js for MOBI/AZW3, pdf.js with its CMaps, standard fonts and image decoders, fflate) ship inside the APK.
+- Back button closes the innermost popup or sheet, then the book, then sends the app to the background.
+- "Open with" and "Share to" Marginalia for EPUB, MOBI/AZW3, PDF, FB2, CBZ and plain-text files. Generic `application/octet-stream` files are accepted too, because many file managers label ebooks that way; the app checks the content and explains when a file isn't a book.
+- Volume keys turn pages, and the screen stays on while a book is open. Both can be switched off in Themes & Settings → Options.
+- Native share and clipboard, status-bar icons that follow the reading theme, and a working dictionary lookup.
+
+## Building locally
+
+Needs Node 22, JDK 21 and the Android SDK (Android Studio installs it).
+
+```sh
+cd android-app
+npm ci
+npm run sync          # builds www/ and copies it into the Android project
+cd android && ./gradlew assembleDebug
+```
+
+Set `MARGINALIA_KEYSTORE_PATH` and `MARGINALIA_KEYSTORE_PASSWORD` before `./gradlew assembleRelease` to sign a release build.

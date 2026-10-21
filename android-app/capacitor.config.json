@@ -1,0 +1,18 @@
+{
+  "appId": "com.hridesh.marginalia",
+  "appName": "Marginalia",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#F2F2F7",
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "initialViewportFitValueHint": "cover",
+      "style": "DEFAULT"
+    }
+  }
+}

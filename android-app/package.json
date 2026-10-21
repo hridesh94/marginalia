@@ -1,0 +1,30 @@
+{
+  "name": "marginalia-android",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android (Capacitor) wrapper for the Marginalia EPUB reader in ../reader",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-web.mjs",
+    "sync": "node scripts/build-web.mjs && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/clipboard": "8.0.1",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/share": "8.0.3",
+    "@fontsource/charis-sil": "5.3.0",
+    "@fontsource/gelasio": "5.3.0",
+    "@fontsource/literata": "5.3.0",
+    "epubjs": "0.3.93",
+    "fflate": "0.8.2",
+    "foliate-js": "1.0.1",
+    "jszip": "3.10.1",
+    "pdfjs-dist": "5.7.284"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "esbuild": "0.28.2"
+  }
+}
