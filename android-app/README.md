@@ -34,6 +34,7 @@ Keep a backup of the keystore. If it's lost, future builds can't update the inst
 - Full screen while reading: the status and navigation bars are hidden while a book is open (a swipe from the edge shows them briefly) and come back in the library.
 - One selection bar: while a book is open, `ReaderWebView` keeps Android's text-selection toolbar (Copy, Translate, Select all…) from appearing, so only Marginalia's bar with highlight colours, Note, Copy and Look Up shows. Text fields keep Android's menu, so Paste still works.
 - Native share and clipboard, and status-bar icons that follow the reading theme.
+- Current Android baselines: targets API 36 (Android 16) with edge-to-edge layout; predictive back (`enableOnBackInvokedCallback`, and Back is handed to the system whenever nothing in the app is open, so the back-to-home preview plays); the SplashScreen API; an adaptive icon with a monochrome layer for themed icons on Android 13+; haptic feedback on long press and when a highlight or bookmark is made.
 
 ## Building locally
 

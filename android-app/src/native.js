@@ -30,6 +30,10 @@ if (Capacitor.isNativePlatform()) {
     speak: (text, lang) => TextToSpeech.speak({ text, lang: lang || 'en-US', rate: 0.95 }),
     stopSpeaking: () => TextToSpeech.stop().catch(() => {}),
     setReading: (opts) => ReaderBridge.setReading(opts).catch(() => {}),
+    // 'press' (long press), 'tick' (a small confirmation like a highlight or bookmark)
+    haptic: (type) => ReaderBridge.haptic({ type }).catch(() => {}),
+    // false hands Back to Android, so its predictive back-to-home preview plays when nothing is open
+    setBackHandled: (on) => App.toggleBackButtonHandler({ enabled: !!on }).catch(() => {}),
     // dark === true: light icons for a dark page; false: dark icons; null: follow the system theme
     setBars: (dark) =>
       SystemBars.setStyle({

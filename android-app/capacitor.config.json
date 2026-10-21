@@ -3,7 +3,7 @@
   "appName": "Marginalia",
   "webDir": "www",
   "android": {
-    "backgroundColor": "#F2F2F7",
+    "backgroundColor": "#F4F1EA",
     "allowMixedContent": false,
     "captureInput": false,
     "webContentsDebuggingEnabled": false

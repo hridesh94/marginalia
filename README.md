@@ -1,3 +1,5 @@
+<img src="brand/marginalia-mark.svg" width="72" height="72" alt="">
+
 # Marginalia
 
 An Apple-inspired ebook reader for Android. It opens EPUB, Kindle MOBI and AZW3, PDF, FB2, CBZ comics, TXT and HTML books, shows each book the way its publisher designed it, turns pages like paper, and has a dictionary built in that works offline. Your books stay on your phone.
@@ -16,3 +18,7 @@ An Apple-inspired ebook reader for Android. It opens EPUB, Kindle MOBI and AZW3,
 | `.github/workflows/` | `android.yml` builds the APK and publishes signed builds as releases; `pages.yml` publishes the website. |
 
 See [`reader/README.md`](reader/README.md) for the reader's features and [`android-app/README.md`](android-app/README.md) for building and signing the app.
+
+## Brand
+
+`brand/` holds the mark: `marginalia-mark.svg` (teal disc with the open book, used on the website and in the app), `marginalia-app-icon.svg` (rounded-square version) and `marginalia-glyph.svg` (the book alone, in `currentColor`). The Android launcher, round, themed (monochrome) and splash icons are drawn from the same shape.

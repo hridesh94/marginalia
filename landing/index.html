@@ -11,7 +11,7 @@
 <meta property="og:description" content="Marginalia is an Apple-inspired ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's original design, and turns pages like paper.">
 <meta property="og:url" content="https://hridesh94.github.io/marginalia/">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 12 84 84'%3E%3Crect x='12' y='12' width='84' height='84' rx='18' fill='%231C1C1E'/%3E%3Crect x='35' y='29' width='38' height='50' rx='3.2' fill='%23F4F1E8'/%3E%3Cpath d='M64 29h6v15l-3-2.6-3 2.6z' fill='%230A84FF'/%3E%3C/svg%3E">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -52,7 +52,7 @@ p{margin:0}
 /* header */
 header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px}
 .brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-family:var(--display);font-size:20px;font-weight:600}
-.brand svg{width:34px;height:34px;border-radius:9px;flex:none}
+.brand img{width:34px;height:34px;flex:none;display:block}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s ease, background-color .15s ease}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);padding:14px 22px;font-size:16px}
@@ -158,7 +158,7 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
 <header>
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Marginalia">
-      <svg viewBox="12 12 84 84" aria-hidden="true"><rect x="12" y="12" width="84" height="84" fill="#1C1C1E"/><rect x="35" y="29" width="38" height="50" rx="3.2" fill="#F4F1E8"/><g fill="#B9B4A8"><rect x="40" y="40" width="22" height="2.2" rx="1.1"/><rect x="40" y="46" width="28" height="2.2" rx="1.1"/><rect x="40" y="52" width="28" height="2.2" rx="1.1"/><rect x="40" y="58" width="28" height="2.2" rx="1.1"/><rect x="40" y="64" width="28" height="2.2" rx="1.1"/><rect x="40" y="70" width="17" height="2.2" rx="1.1"/></g><rect x="40" y="51" width="28" height="4.2" rx="1" fill="#FFD60A" opacity=".55"/><rect x="40" y="57" width="20" height="4.2" rx="1" fill="#FFD60A" opacity=".55"/><rect x="37.2" y="51" width="1.4" height="10.2" rx=".7" fill="#0A84FF"/><path d="M64 29h6v15l-3-2.6-3 2.6z" fill="#0A84FF"/></svg>
+      <img src="icon.svg" width="34" height="34" alt="">
       Marginalia
     </a>
     <a class="btn btn-small" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">Download</a>

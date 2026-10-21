@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.OpenableColumns;
 import android.util.Base64;
+import android.view.HapticFeedbackConstants;
 import android.view.Window;
 import android.view.WindowManager;
 import androidx.core.view.WindowCompat;
@@ -124,6 +125,21 @@ public class ReaderBridgePlugin extends Plugin {
         } else {
             bars.show(WindowInsetsCompat.Type.systemBars());
         }
+    }
+
+    /** A short vibration on long press, or a lighter tick when a highlight or bookmark is made. */
+    @PluginMethod
+    public void haptic(PluginCall call) {
+        final String type = call.getString("type", "tick");
+        getActivity()
+            .runOnUiThread(() -> {
+                int feedback;
+                if ("press".equals(type)) feedback = HapticFeedbackConstants.LONG_PRESS;
+                else if (Build.VERSION.SDK_INT >= 30) feedback = HapticFeedbackConstants.CONFIRM;
+                else feedback = HapticFeedbackConstants.CLOCK_TICK;
+                getBridge().getWebView().performHapticFeedback(feedback);
+            });
+        call.resolve();
     }
 
     /** Tells the reader that Android's selection toolbar is suppressed on this device, so it shows its own bar. */

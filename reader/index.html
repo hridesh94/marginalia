@@ -11,15 +11,18 @@
   --font-ui:system-ui,Roboto,"Segoe UI",Helvetica,Arial,sans-serif;
   --font-serif:Charter,"Bitstream Charter","Charis SIL","Iowan Old Style","Palatino Linotype",Literata,Georgia,serif;
   --font-display:"Charis SIL",Charter,"Bitstream Charter",Georgia,serif;
+  /* Motion (Material 3): things arrive on the emphasized-decelerate curve and leave faster on emphasized-accelerate. */
+  --ease-in:cubic-bezier(.05,.7,.1,1); --ease-out:cubic-bezier(.3,0,.8,.15); --ease-std:cubic-bezier(.2,0,0,1);
+  --toast-bg:#24201B; --toast-fg:#F4F1EA;
   --r-bg:#FFFFFF; --r-fg:#1F1B16; --r-muted:#6B645A; --r-surface:#FFFFFF; --r-sep:rgba(30,26,22,.13); --r-fill:rgba(30,26,22,.06);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#141210; --surface:#1F1C19; --fg:#EEE8DE; --muted:#A29A8E; --sep:rgba(238,232,222,.13);
-  --accent:#6CC2B8; --accent-fg:#0E1F1D; --accent-soft:rgba(108,194,184,.16); --fill:rgba(238,232,222,.07); --danger:#F0806E; --danger-fg:#2A0E09;
+  --accent:#6CC2B8; --accent-fg:#0E1F1D; --accent-soft:rgba(108,194,184,.16); --fill:rgba(238,232,222,.07); --danger:#F0806E; --danger-fg:#2A0E09; --toast-bg:#EEE8DE; --toast-fg:#1E1A16;
   --shadow:0 10px 30px rgba(0,0,0,.55); color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#141210; --surface:#1F1C19; --fg:#EEE8DE; --muted:#A29A8E; --sep:rgba(238,232,222,.13);
-  --accent:#6CC2B8; --accent-fg:#0E1F1D; --accent-soft:rgba(108,194,184,.16); --fill:rgba(238,232,222,.07); --danger:#F0806E; --danger-fg:#2A0E09;
+  --accent:#6CC2B8; --accent-fg:#0E1F1D; --accent-soft:rgba(108,194,184,.16); --fill:rgba(238,232,222,.07); --danger:#F0806E; --danger-fg:#2A0E09; --toast-bg:#EEE8DE; --toast-fg:#1E1A16;
   --shadow:0 10px 30px rgba(0,0,0,.55); color-scheme:dark }
 
 html,body{height:100%}
@@ -55,7 +58,8 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .book .t{font-size:12px;line-height:1.25;color:var(--fg);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .book .m{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:6px;font-variant-numeric:tabular-nums}
 .empty{max-width:420px;margin:48px auto;text-align:center;color:var(--muted)}
-.empty .cov{width:96px;height:140px;margin:0 auto 18px;border-radius:2px 4px 4px 2px;background:var(--surface);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.empty .mark{width:96px;height:96px;margin:0 auto 20px}
+.empty .mark svg{width:100%;height:100%;display:block}
 .empty h2{color:var(--fg);font-family:var(--font-display);font-size:22px;margin:0 0 8px}
 .empty p{margin:0 0 18px;font-size:14px;line-height:1.5}
 .hint{font-size:12px;color:var(--muted);margin:28px 4px 0;max-width:560px;line-height:1.5}
@@ -79,12 +83,12 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 #pagesleft{position:absolute;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .25s;white-space:nowrap}
 #reader.chrome-on #title{opacity:0}
 #reader.chrome-on #pagesleft{opacity:1}
-#back{position:absolute;left:max(8px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:2px;height:36px;padding:0 8px;border-radius:10px;color:var(--r-fg);font-size:15px;opacity:0;pointer-events:none;transition:opacity .25s}
+#back{position:absolute;left:max(8px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:2px;height:44px;padding:0 10px;border-radius:10px;color:var(--r-fg);font-size:15px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease-std)}
 #reader.chrome-on #back{opacity:1;pointer-events:auto}
 #pagenum{position:absolute;left:50%;transform:translateX(-50%);font-size:12px}
 #progress{position:absolute;left:max(16px,env(safe-area-inset-left,0px));opacity:0;transition:opacity .25s;white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
 #reader.chrome-on #progress{opacity:1}
-#menubtn{position:absolute;right:max(8px,env(safe-area-inset-right,0px));width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;color:var(--r-muted)}
+#menubtn{position:absolute;right:max(6px,env(safe-area-inset-right,0px));width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;color:var(--r-muted)}
 #menubtn svg.i{width:22px;height:22px}
 #ribbon{position:absolute;top:0;right:max(26px,env(safe-area-inset-right,0px));width:16px;height:30px;background:var(--accent);clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%);opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;z-index:6;pointer-events:none}
 #reader.bookmarked #ribbon{opacity:1;transform:none}
@@ -97,8 +101,9 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 
 /* ---------- Menu card ---------- */
 #scrim{position:absolute;inset:0;z-index:8;background:transparent}
+#scrim{transition:background-color .3s var(--ease-std)}
 #scrim.dark{background:rgba(0,0,0,.25)}
-#menu{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 60px);z-index:9;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+#menu{transform-origin:100% 100%;position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 60px);z-index:9;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
 .card{width:236px;max-width:calc(100vw - 32px);border-radius:12px;background:var(--r-surface);border:1px solid var(--r-sep);box-shadow:var(--shadow);overflow:hidden;color:var(--r-fg)}
 .card .row{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;height:46px;padding:0 14px;box-sizing:border-box;text-align:left;font-size:15px}
 .card .row+.row{border-top:1px solid var(--r-sep)}
@@ -112,17 +117,20 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .rnd{width:46px;height:46px;border-radius:12px;background:var(--r-surface);border:1px solid var(--r-sep);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:var(--r-fg)}
 .rnd.on{color:var(--accent)}
 .rnd:active{transform:scale(.94)}
+.btn,.rnd,.ctl button,.opt .seg2 button,.tile,#pop .act,#pop .dot,.def .chip,.def .dsave,.sh .x,#menubtn,#back{transition:transform .12s var(--ease-std),background-color .15s var(--ease-std),border-color .15s var(--ease-std),color .15s var(--ease-std),box-shadow .15s var(--ease-std)}
+.btn:active,.ctl button:active,.opt .seg2 button:active,.tile:active,#pop .act:active,.def .chip:active,.def .dsave:active{transform:scale(.97)}
+#pop .dot:active{transform:scale(.9)}
 
 /* ---------- Sheets ---------- */
-.sheet{visibility:hidden;position:absolute;left:0;right:0;bottom:0;z-index:10;background:var(--r-surface);color:var(--r-fg);border-radius:16px 16px 0 0;border-top:1px solid var(--r-sep);box-shadow:0 -6px 30px rgba(0,0,0,.14);padding-bottom:env(safe-area-inset-bottom,0px);display:flex;flex-direction:column;max-height:calc(100% - env(safe-area-inset-top,0px) - 24px);transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s}
-.sheet.open{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.sheet{visibility:hidden;position:absolute;left:0;right:0;bottom:0;z-index:10;background:var(--r-surface);color:var(--r-fg);border-radius:16px 16px 0 0;border-top:1px solid var(--r-sep);box-shadow:0 -6px 30px rgba(0,0,0,.14);padding-bottom:env(safe-area-inset-bottom,0px);display:flex;flex-direction:column;max-height:calc(100% - env(safe-area-inset-top,0px) - 24px);transform:translateY(100%);transition:transform .2s var(--ease-out),opacity .2s var(--ease-out),visibility 0s .2s}
+.sheet.open{transform:none;visibility:visible;transition:transform .4s var(--ease-in),opacity .3s var(--ease-in),visibility 0s}
 .sheet.tall{height:calc(100% - env(safe-area-inset-top,0px) - 56px)}
 .sheet.tall.center{top:50%;bottom:auto;left:50%;transform:translate(-50%,-50%) scale(.98);height:auto;max-height:80%;width:min(560px,calc(100% - 32px));border-radius:16px;border:1px solid var(--r-sep);opacity:0;pointer-events:none}
 .sheet.tall.center.open{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
 .sh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .sh h2{margin:0;font-family:var(--font-display);font-size:19px;font-weight:700;display:flex;align-items:center;gap:8px}
 .sh h2 small{font-family:var(--font-ui);font-weight:400;color:var(--r-muted);font-size:14px}
-.sh .x{width:36px;height:36px;margin-right:-8px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--r-fg)}
+.sh .x{width:44px;height:44px;margin-right:-10px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--r-fg)}
 .sh .x:active{background:var(--r-fill)}
 .sh .x svg.i{width:18px;height:18px;stroke-width:2}
 .sb{overflow-y:auto;overscroll-behavior:contain;flex:1;min-height:0;padding:0 0 12px}
@@ -141,7 +149,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .list .it.cur .l1{color:var(--accent);font-weight:600}
 .list .it.lvl1{padding-left:calc(max(16px,env(safe-area-inset-left,0px)) + 18px)}
 .list .it.lvl2{padding-left:calc(max(16px,env(safe-area-inset-left,0px)) + 36px)}
-.list .del{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--r-muted)}
+.list .del{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--r-muted)}
 .list .del svg.i{width:16px;height:16px}
 .sw{width:6px;height:36px;border-radius:3px;flex:none}
 .note{font-size:13px;color:var(--r-fg);background:var(--r-fill);border-radius:8px;padding:6px 8px;margin-top:6px;white-space:pre-wrap}
@@ -162,10 +170,14 @@ mark{background:rgba(242,201,76,.5);color:inherit;border-radius:2px}
 .ctl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 16px 14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .ctl button{height:44px;border-radius:10px;border:1px solid var(--r-sep);display:flex;align-items:center;justify-content:center;color:var(--r-fg);font-family:var(--font-serif)}
 .ctl button.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-.ctl button:active{opacity:.7}
 .ctl .sm{font-size:14px}.ctl .lg{font-size:22px}
 .bright{display:flex;align-items:center;gap:12px;padding:0 16px 14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));color:var(--r-muted)}
-.bright input{flex:1;accent-color:var(--accent);min-width:0}
+.bright input{flex:1;min-width:0;height:32px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;--p:100%}
+.bright input::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent)) 0 0/var(--p) 100% no-repeat,var(--r-sep)}
+.bright input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;background:var(--r-surface);border:2px solid var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.bright input::-moz-range-track{height:4px;border-radius:2px;background:var(--r-sep)}
+.bright input::-moz-range-progress{height:4px;border-radius:2px;background:var(--accent)}
+.bright input::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--r-surface);border:2px solid var(--accent)}
 .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 16px 16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .tile{height:76px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:inset 0 0 0 1px var(--r-sep);transition:box-shadow .15s}
 .tile.on{box-shadow:inset 0 0 0 2px var(--accent)}
@@ -177,7 +189,7 @@ mark{background:rgba(242,201,76,.5);color:inherit;border-radius:2px}
 .opt:first-child{border-top:0}
 .opt{flex-wrap:wrap;row-gap:8px}
 .opt .seg2{display:flex;gap:6px;flex-wrap:wrap;flex:none;max-width:100%}
-.opt .seg2 button{padding:6px 11px;border-radius:8px;font-size:13px;color:var(--r-fg);border:1px solid var(--r-sep);white-space:nowrap}
+.opt .seg2 button{min-height:36px;padding:6px 12px;border-radius:8px;font-size:13px;color:var(--r-fg);border:1px solid var(--r-sep);white-space:nowrap}
 .opt .seg2 button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
 .opt select{background:transparent;border:1px solid var(--r-sep);border-radius:8px;padding:6px 10px;color:var(--r-fg);max-width:55%}
 .opt .why{flex-basis:100%;font-size:12px;color:var(--r-muted)}
@@ -188,9 +200,9 @@ mark{background:rgba(242,201,76,.5);color:inherit;border-radius:2px}
 
 /* Highlight popover */
 #pop{position:absolute;z-index:11;background:var(--r-surface);border:1px solid var(--r-sep);color:var(--r-fg);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;padding:6px;width:max-content;max-width:calc(100vw - 24px);box-sizing:border-box}
-#pop .prow{display:flex;justify-content:center;gap:12px;padding:8px 10px 10px}
+#pop .prow{display:flex;justify-content:center;gap:14px;padding:8px 10px 10px}
 #pop .arow{display:flex;gap:2px;border-top:1px solid var(--r-sep);padding-top:4px}
-#pop .dot{width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.10);flex:none}
+#pop .dot{width:32px;height:32px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.10);flex:none}
 #pop .dot.on{box-shadow:0 0 0 2px var(--r-bg),0 0 0 4px var(--accent)}
 #pop .act{flex:1;padding:9px 12px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap;text-align:center}
 #pop .act:active{background:var(--r-fill)}
@@ -241,8 +253,9 @@ textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:1px solid v
 .acts .btn.danger{background:var(--danger);color:var(--danger-fg)}
 
 /* Toast + confirm */
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translate(-50%,20px);background:#24201B;color:#F4F1EA;padding:10px 16px;border-radius:10px;font-size:14px;max-width:min(420px,calc(100vw - 32px));box-sizing:border-box;text-align:center;opacity:0;transition:opacity .25s,transform .25s;z-index:50;pointer-events:none}
-#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translate(-50%,16px) scale(.98);background:var(--toast-bg);color:var(--toast-fg);box-shadow:0 6px 20px rgba(0,0,0,.18);padding:10px 16px;border-radius:10px;font-size:14px;max-width:min(420px,calc(100vw - 32px));box-sizing:border-box;text-align:center;opacity:0;transition:opacity .2s var(--ease-out),transform .2s var(--ease-out);z-index:50;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0);transition:opacity .3s var(--ease-in),transform .4s var(--ease-in)}
+body.reading #toast{bottom:calc(env(safe-area-inset-bottom,0px) + 64px);background:var(--rt-bg,var(--toast-bg));color:var(--rt-fg,var(--toast-fg))}
 #confirm{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(20,16,12,.45);padding:24px;box-sizing:border-box}
 #confirm .box{width:min(380px,100%);background:var(--surface);color:var(--fg);border:1px solid var(--sep);border-radius:14px;box-shadow:var(--shadow);padding:20px 20px 14px;box-sizing:border-box}
 #confirm .box h3{margin:0 0 8px;font-family:var(--font-display);font-size:20px;line-height:1.25;font-weight:700;overflow-wrap:anywhere}
@@ -299,7 +312,7 @@ textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:1px solid v
     </div>
     <div class="grid" id="grid"></div>
     <div id="emptystate" class="empty" hidden>
-      <div class="cov"><svg class="i" viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg></div>
+      <div class="mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108"><circle cx="54" cy="54" r="54" fill="#1D6A64"/><g transform="translate(-3.485 111.575) scale(0.022455 -0.022455)"><path fill="#F4F1EA" fill-rule="evenodd" d="M2171 3876 c77 -20 144 -47 262 -104 4 -2 7 6 7 17 0 39 30 20 94 -60 23 -30 34 -52 30 -63 -5 -12 -2 -15 10 -10 9 3 16 10 16 16 0 5 25 36 56 69 47 48 70 64 136 89 140 54 191 63 353 64 135 1 198 -3 275 -19 13 -2 40 -7 60 -10 20 -3 45 -7 57 -9 11 -3 38 -7 59 -10 22 -4 66 -11 99 -16 33 -6 74 -13 91 -15 26 -5 40 -19 80 -79 l49 -74 162 -32 163 -33 0 -908 0 -909 -42 0 c-24 0 -149 9 -278 20 -129 11 -338 26 -465 35 -126 8 -311 22 -409 30 -156 13 -181 13 -195 1 -11 -10 -65 -18 -188 -25 -95 -6 -184 -11 -199 -11 l-27 0 7 -102 c3 -57 13 -183 22 -280 8 -98 14 -187 12 -199 -3 -19 -6 -17 -28 16 -14 21 -30 40 -37 42 -6 3 -24 -14 -39 -36 -15 -23 -30 -41 -34 -41 -7 0 -10 31 -35 370 -21 282 -18 270 -63 270 -20 0 -86 -4 -147 -10 -60 -5 -189 -14 -285 -20 -96 -6 -322 -22 -501 -35 -179 -14 -344 -25 -367 -25 l-42 0 0 909 0 909 23 5 c12 3 83 15 159 28 l136 22 42 76 42 77 242 33 c132 19 279 40 326 46 136 20 208 17 311 -9z M3005 3814 c-39 -6 -117 -28 -175 -48 -89 -30 -111 -42 -146 -78 -23 -25 -50 -68 -63 -101 -21 -58 -21 -63 -19 -734 l3 -676 47 36 c71 55 100 66 216 87 133 24 440 27 612 6 63 -8 143 -17 178 -20 l62 -6 0 733 0 733 -167 33 c-103 21 -209 35 -273 38 -58 2 -128 5 -155 6 -28 2 -82 -2 -120 -9z M1920 3807 c-3 -3 -68 -10 -145 -16 -187 -15 -368 -41 -377 -55 -12 -18 -10 -1444 2 -1451 16 -10 854 16 861 26 3 5 11 78 18 162 19 236 30 337 61 537 15 102 43 295 60 429 31 235 32 245 14 258 -53 39 -282 101 -404 109 -47 4 -87 4 -90 1z M1304 3639 c-7 -8 -42 -58 -78 -112 l-66 -99 0 -689 c0 -379 3 -689 8 -689 4 0 40 49 80 109 l72 108 -2 693 c-2 521 -6 690 -14 679z M3800 2957 l0 -682 65 -104 c35 -57 69 -109 75 -115 7 -7 10 197 10 676 l0 686 -67 111 c-36 61 -70 111 -75 111 -4 0 -8 -307 -8 -683z M2508 3190 c-25 -54 -98 -665 -98 -820 l0 -118 51 -32 c28 -17 53 -29 55 -27 2 2 3 231 2 508 -2 277 -6 497 -10 489z M1805 2273 c-77 -5 -274 -23 -330 -30 -42 -6 -46 -8 -25 -14 22 -6 21 -7 -10 -8 -62 -2 -76 -11 -113 -74 -20 -34 -52 -88 -72 -119 -28 -48 -31 -58 -17 -58 37 0 502 31 745 50 142 11 262 20 267 20 18 0 12 77 -7 84 -14 6 -14 8 3 21 16 11 17 16 6 27 -9 9 -60 13 -190 15 -98 1 -184 4 -192 7 -8 3 -31 7 -50 9 -19 3 72 4 203 3 230 -1 238 0 235 18 -4 24 -28 31 -158 45 -95 10 -179 12 -295 4z M2943 2250 c-101 -11 -172 -29 -211 -52 -45 -27 -112 -118 -112 -151 0 -25 3 -27 38 -26 20 0 55 6 76 12 31 10 87 8 270 -5 211 -15 553 -39 799 -54 l98 -6 -28 51 c-15 28 -47 81 -70 119 l-42 69 -163 23 c-177 25 -520 36 -655 20z"/></g></svg></div>
       <h2>No books yet</h2>
       <p>Add EPUB, MOBI, PDF or other ebooks, one or several at a time. They stay here, with your place, highlights and bookmarks saved between sessions.</p>
       <button class="btn" type="button" id="addbtn2"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add books</button>
@@ -1367,15 +1380,44 @@ const NATIVE = () => window.MG_NATIVE || null;
 function nativeReading(on){ const n=NATIVE(); if(n && n.setReading) n.setReading({reading:!!on, volumeKeys:!!S.volKeys, keepAwake:!!S.keepAwake}); }
 function nativeBars(dark){ const n=NATIVE(); if(n && n.setBars) n.setBars(dark); }
 
+/* ---------- motion ----------
+   reveal/conceal show and hide an element with a short enter or exit animation (transform and opacity
+   only). Nothing animates with "remove animations" switched on, or in the E-ink theme. While an element is
+   leaving it ignores taps; showing it again mid-exit cancels the exit. */
+const MOTION_IN = 'cubic-bezier(.05,.7,.1,1)', MOTION_OUT = 'cubic-bezier(.3,0,.8,.15)';
+const ANIM = {
+  fade: [{opacity:0}, {opacity:1}],
+  pop: [{opacity:0, transform:'translateY(6px) scale(.96)'}, {opacity:1, transform:'none'}],
+  rise: [{opacity:0, transform:'translateY(14px)'}, {opacity:1, transform:'none'}],
+};
+function motionOK(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  return !(typeof reader !== 'undefined' && !reader.hidden && (THEMES[S.theme] || {}).ink);
+}
+function reveal(el, frames, ms=220){
+  if(el._out){ el._out.cancel(); el._out=null; el.style.pointerEvents=''; }
+  const was = el.hidden; el.hidden = false;
+  if(was && frames && motionOK()) el.animate(frames, {duration:ms, easing:MOTION_IN});
+}
+function conceal(el, frames, ms=140){
+  if(el.hidden || el._out) return;
+  if(!frames || !motionOK()){ el.hidden = true; return; }
+  el.style.pointerEvents = 'none';
+  const a = el._out = el.animate(frames.slice().reverse(), {duration:ms, easing:MOTION_OUT, fill:'forwards'});
+  a.onfinish = () => { if(el._out !== a) return; el._out = null; el.hidden = true; el.style.pointerEvents = ''; a.cancel(); };
+}
+const haptic = type => { const n = NATIVE(); if(n && n.haptic) n.haptic(type); };
+
 /* ---------- toast / confirm ---------- */
 let toastT;
 function toast(msg, ms=2600){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), ms); }
 function confirmBox(title, body, okLabel, onOk){
   const c=$('#confirm'); c.innerHTML = `<div class="box" role="alertdialog" aria-labelledby="cf-t"><h3 id="cf-t">${esc(title)}</h3><p>${esc(body)}</p><div class="row"><button type="button" class="c">Keep</button><button type="button" class="d">${esc(okLabel)}</button></div></div>`;
-  c.hidden=false; try{ window.getSelection().removeAllRanges(); }catch(e){}
+  reveal(c, ANIM.fade, 200); $('.box', c).animate && motionOK() && $('.box', c).animate(ANIM.pop, {duration:260, easing:MOTION_IN}); try{ window.getSelection().removeAllRanges(); }catch(e){}
   const opened = Date.now(); // the press that opened the dialog may still be lifting off; ignore it
-  c.onclick = e => { if(Date.now() - opened > 400 && e.target===c) c.hidden=true; };
-  $('.d',c).onclick = () => { if(Date.now() - opened < 400) return; c.hidden=true; onOk(); }; $('.c',c).onclick = () => { if(Date.now() - opened < 400) return; c.hidden=true; };
+  const close = () => conceal(c, ANIM.fade, 150);
+  c.onclick = e => { if(Date.now() - opened > 400 && e.target===c) close(); };
+  $('.d',c).onclick = () => { if(Date.now() - opened < 400) return; close(); onOk(); }; $('.c',c).onclick = () => { if(Date.now() - opened < 400) return; close(); };
 }
 
 /* ---------- library ---------- */
@@ -1391,7 +1433,7 @@ function renderLibrary(){
   $('#libcount').textContent = items.length ? `${items.length} ${items.length===1?'book':'books'} · kept on this device` : 'Your books stay on this device.';
   $$('.book', grid).forEach(el => {
     const id=el.dataset.id; let timer=null, fired=false, sx=0, sy=0;
-    const start = e => { fired=false; sx=e.clientX; sy=e.clientY; clearTimeout(timer); timer=setTimeout(()=>{ fired=true; askRemove(id); }, 550); };
+    const start = e => { fired=false; sx=e.clientX; sy=e.clientY; clearTimeout(timer); timer=setTimeout(()=>{ fired=true; haptic('press'); askRemove(id); }, 550); };
     const cancel = () => { clearTimeout(timer); timer=null; };
     el.addEventListener('pointerdown', start); el.addEventListener('pointerup', cancel); el.addEventListener('pointerleave', cancel); el.addEventListener('pointercancel', cancel);
     el.addEventListener('pointermove', e => { if(Math.abs(e.clientX-sx)>8 || Math.abs(e.clientY-sy)>8) cancel(); });
@@ -1440,14 +1482,14 @@ async function importBuffer(buf, opts={}){
 // Progress card for imports that take a moment (PDF, comics, Kindle files).
 function importUI(name, ctrl, batch){
   const card=$('#importcard'); let shown=false;
-  const show = () => { if(shown) return; shown=true; $('#ic-title').textContent = batch ? `Adding ${batch.index} of ${batch.total}: “${name}”` : `Adding “${name}”`; $('#ic-stage').textContent='Reading the file…'; $('#ic-bar').style.width='4%'; card.hidden=false; };
+  const show = () => { if(shown) return; shown=true; $('#ic-title').textContent = batch ? `Adding ${batch.index} of ${batch.total}: “${name}”` : `Adding “${name}”`; $('#ic-stage').textContent='Reading the file…'; $('#ic-bar').style.width='4%'; reveal(card, ANIM.rise, 280); };
   const t = setTimeout(show, 350);
   $('#ic-cancel').onclick = () => { ctrl.abort(); $('#ic-stage').textContent='Cancelling…'; };
   return {
     update(pr){ show(); if(!pr) return;
       if(pr.total){ $('#ic-stage').textContent = `${pr.stage==='Pages'?'Page':'Part'} ${pr.done} of ${pr.total}`; $('#ic-bar').style.width = Math.max(4, Math.round(pr.done/pr.total*96))+'%'; }
       else { $('#ic-stage').textContent = pr.stage==='Finishing' ? 'Finishing…' : (pr.stage||'Working…'); if(pr.stage==='Finishing') $('#ic-bar').style.width='98%'; } },
-    close(){ clearTimeout(t); card.hidden=true; }
+    close(){ clearTimeout(t); conceal(card, ANIM.rise, 160); }
   };
 }
 async function importWithUI(buf, name, batch){
@@ -1519,6 +1561,7 @@ function applyReaderTheme(){
   const acc = t.ink ? t.fg : t.dark ? ACCENT_DARK : ACCENT; // E-ink keeps the panels in plain ink
   rs.setProperty('--accent', acc); rs.setProperty('--accent-fg', t.dark ? '#0E1F1D' : '#FFFFFF'); rs.setProperty('--accent-soft', hexA(acc, t.dark ? .18 : .12));
   reader.classList.toggle('eink', !!t.ink);
+  document.body.style.setProperty('--rt-bg', t.dark ? t.fg : '#24201B'); document.body.style.setProperty('--rt-fg', t.dark ? t.bg : '#F4F1EA');
   rs.colorScheme = t.dark ? 'dark' : 'light';
   sizeViewer();
   $('#dim').style.opacity = String((100 - S.brightness)/100 * 0.75);
@@ -1646,8 +1689,11 @@ function restyleAll(relayout){
 }
 
 function showReaderShell(item){
-  R.item = item; document.body.classList.add('reading'); $('#library').hidden = true; reader.hidden = false;
-  $('#title').textContent = item.title; $('#loading').hidden=false; $('#loadmsg').textContent='Opening…';
+  R.item = item; document.body.classList.add('reading');
+  if(reader._out){ reader._out.cancel(); reader._out=null; reader.style.pointerEvents=''; }
+  if(reader.hidden){ reader.hidden = false; const lib = $('#library'); // the page fades in over the library, which hides once it's covered
+    if(motionOK()) reader.animate(ANIM.fade, {duration:220, easing:MOTION_IN}).finished.then(() => { if(!reader.hidden) lib.hidden = true; }).catch(() => {}); else lib.hidden = true; }
+  $('#title').textContent = item.title; reveal($('#loading')); $('#loadmsg').textContent='Opening…';
   $('#pagenum').textContent=''; $('#pagesleft').textContent=''; $('#progress').textContent=''; reader.classList.remove('bookmarked','chrome-on');
   applyReaderTheme();
 }
@@ -1662,7 +1708,7 @@ async function openBook(item, buf){
     R.book.loaded.navigation.then(nav => { R.toc = nav.toc || []; R.flat=[]; (function walk(items, lvl){ (items||[]).forEach(it => { R.flat.push({label:(it.label||'').trim(), href:it.href, lvl}); walk(it.subitems, lvl+1); }); })(R.toc, 0); }).catch(()=>{});
     createRendition();
     await R.rendition.display(item.cfi || undefined);
-    $('#loading').hidden = true;
+    conceal($('#loading'), ANIM.fade, 200);
     item.opened = Date.now(); saveLib();
     nativeReading(true);
     if(DICT.base) idle(() => dictExc());
@@ -1695,7 +1741,7 @@ function closeBook(show=true){
   if(R.book){ try{ R.book.destroy(); }catch(e){} R.book=null; }
   viewer.innerHTML=''; R.loc=null; R.item=null;
   nativeReading(false);
-  if(show){ reader.hidden=true; $('#library').hidden=false; document.body.classList.remove('reading'); nativeBars(null); renderLibrary(); }
+  if(show){ $('#library').hidden=false; conceal(reader, ANIM.fade, 180); document.body.classList.remove('reading'); nativeBars(null); renderLibrary(); }
 }
 $('#back').addEventListener('click', () => closeBook(true));
 
@@ -1858,7 +1904,8 @@ function paintGhost(mode, side, q){
   gpage.style.transformOrigin = left ? 'left center' : 'right center';
   if(mode==='flip'){
     gpage.style.transform = `rotateY(${(left?-1:1)*q*90}deg)`; gpage.style.opacity='1';
-    gshade.style.background = `linear-gradient(${left?'to left':'to right'}, rgba(0,0,0,.42), rgba(0,0,0,0) 70%)`; gshade.style.opacity = String(Math.min(1, q*1.4));
+    if(gshade._side !== side){ gshade._side = side; gshade.style.background = `linear-gradient(${left?'to left':'to right'}, rgba(0,0,0,.42), rgba(0,0,0,0) 70%)`; } // set once per turn; only opacity changes per frame
+    gshade.style.opacity = String(Math.min(1, q*1.4));
   } else if(mode==='slide'){
     gpage.style.transform = `translateX(${(left?-1:1)*q*100}%)`; gpage.style.opacity='1'; gshade.style.opacity='0';
   } else { gpage.style.transform='none'; gpage.style.opacity=String(1-q); gshade.style.opacity='0'; }
@@ -1895,7 +1942,9 @@ async function doTurn(dir){
     await goDir(-1); hideGhost();
   } else {
     placeGhost(0); paintGhost(mode, 'left', 0); showGhost();
+    const crossing = !withinSection(dir);
     const moving = goDir(dir);
+    if(crossing) await moving; // the copy holds the old page still while the next chapter is laid out underneath
     const side = (dir>0) !== R.rtl ? 'left' : 'right';
     await animateQ(mode, side, 0, 1, ms);
     await moving; hideGhost();
@@ -1960,9 +2009,9 @@ async function onTouchEnd(e){
 
 /* ---------- menu ---------- */
 const menu=$('#menu'), scrim=$('#scrim');
-function openMenu(){ menu.hidden=false; scrim.hidden=false; scrim.classList.remove('dark'); $('#menubtn').setAttribute('aria-expanded','true'); showChrome(true); updateChrome(); }
-function closeMenu(){ menu.hidden=true; if(!openSheetId) scrim.hidden=true; $('#menubtn').setAttribute('aria-expanded','false'); }
-$('#menubtn').addEventListener('click', () => menu.hidden ? openMenu() : closeMenu());
+function openMenu(){ reveal(menu, ANIM.pop, 240); reveal(scrim); scrim.classList.remove('dark'); $('#menubtn').setAttribute('aria-expanded','true'); showChrome(true); updateChrome(); }
+function closeMenu(){ conceal(menu, ANIM.pop, 130); if(!openSheetId) conceal(scrim); $('#menubtn').setAttribute('aria-expanded','false'); }
+$('#menubtn').addEventListener('click', () => (menu.hidden || menu._out) ? openMenu() : closeMenu()); // a menu that is closing counts as closed
 scrim.addEventListener('click', () => { if(openSheetId) closeSheets(); else closeMenu(); showChrome(false); });
 $$('#menu .row').forEach(b => b.addEventListener('click', () => { closeMenu(); openSheet(b.dataset.sheet); }));
 $('#bmbtn').addEventListener('click', toggleBookmark);
@@ -1974,11 +2023,11 @@ $('#sharebtn').addEventListener('click', shareQuote);
 let openSheetId=null;
 function openSheet(id, keepScrim){
   closeSheets(true); openSheetId=id; const el=$('#sh-'+id); if(!el) return;
-  scrim.hidden=false; scrim.classList.toggle('dark', el.classList.contains('tall'));
+  reveal(scrim, ANIM.fade, 300); scrim.classList.toggle('dark', el.classList.contains('tall'));
   el.classList.add('open'); el.removeAttribute('inert');
   if(id==='toc') renderToc(); if(id==='marks') renderMarks(); if(id==='settings') renderSettings(); if(id==='options') renderOptions(); if(id==='search') setTimeout(()=>$('#q').focus(), 350);
 }
-function closeSheets(keepOpenId){ if(openSheetId==='dict'){ const n=NATIVE(); if(n && n.stopSpeaking) n.stopSpeaking(); } $$('.sheet.open').forEach(el => el.classList.remove('open')); openSheetId=null; if(!keepOpenId){ if(menu.hidden) scrim.hidden=true; } }
+function closeSheets(keepOpenId){ if(openSheetId==='dict'){ const n=NATIVE(); if(n && n.stopSpeaking) n.stopSpeaking(); } $$('.sheet.open').forEach(el => el.classList.remove('open')); openSheetId=null; if(!keepOpenId){ if(menu.hidden || menu._out) conceal(scrim, ANIM.fade, 200); } }
 $$('[data-close]').forEach(b => b.addEventListener('click', () => { closeSheets(); showChrome(false); }));
 $$('.sheet').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
 
@@ -1988,12 +2037,13 @@ function renderSettings(){
   if(!box.children.length){ box.innerHTML = Object.entries(THEMES).map(([k,t]) => `<button type="button" class="tile${t.ink?' ink':''}" data-theme="${k}" style="background:${t.bg};color:${t.fg}" aria-label="${t.name} theme"><b style="font-weight:${t.weight}">Aa</b><span>${t.name}</span></button>`).join('');
     $$('.tile', box).forEach(b => b.addEventListener('click', () => { S.theme=b.dataset.theme; saveSettings(); applyReaderTheme(); restyleAll(false); refreshMarks(); })); }
   applyReaderTheme();
-  $('#bright').value = S.brightness;
+  $('#bright').value = S.brightness; brightFill();
 }
 $('#fsdown').addEventListener('click', () => { if(R.fixed){ toast("Text size doesn't apply to fixed-layout pages.", 2200); return; } S.fontSize = clamp(S.fontSize-1, 13, 32); saveSettings(); restyleAll(true); });
 $('#fsup').addEventListener('click', () => { if(R.fixed){ toast("Text size doesn't apply to fixed-layout pages.", 2200); return; } S.fontSize = clamp(S.fontSize+1, 13, 32); saveSettings(); restyleAll(true); });
 $('#brightbtn').addEventListener('click', () => { const r=$('#brightrow'); r.hidden=!r.hidden; $('#brightbtn').classList.toggle('on', !r.hidden); });
-$('#bright').addEventListener('input', e => { S.brightness = +e.target.value; saveSettings(); applyReaderTheme(); });
+function brightFill(){ const el=$('#bright'); el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); }
+$('#bright').addEventListener('input', e => { S.brightness = +e.target.value; saveSettings(); applyReaderTheme(); brightFill(); });
 $('#optbtn').addEventListener('click', () => openSheet('options'));
 $('#optback').addEventListener('click', () => openSheet('settings'));
 function renderOptions(){
@@ -2037,7 +2087,7 @@ async function toggleBookmark(){
   if(here){ R.bookmarks = R.bookmarks.filter(b=>b!==here); toast('Bookmark removed', 1400); }
   else { let excerpt=''; try{ const r = await R.book.getRange(R.loc.start.cfi); if(r){ const n=r.startContainer; excerpt = (n.textContent||'').trim().slice(0,160); if(!excerpt && r.commonAncestorContainer) excerpt=(r.commonAncestorContainer.textContent||'').trim().slice(0,160); } }catch(e){}
     R.bookmarks.push({id:uid(), cfi:R.loc.start.cfi, chapter:chapterLabelFor(R.loc.start.href), excerpt, page:R.locsReady?(R.loc.start.location+1):null, created:Date.now()}); toast('Bookmarked', 1400); }
-  LS.set('bm:'+R.item.id, R.bookmarks); updateChrome(); closeMenu(); showChrome(false);
+  haptic('tick'); LS.set('bm:'+R.item.id, R.bookmarks); updateChrome(); closeMenu(); showChrome(false);
 }
 let markTab='bm';
 $$('#markseg button').forEach(b => b.addEventListener('click', () => { markTab=b.dataset.v; $$('#markseg button').forEach(x=>x.classList.toggle('on', x===b)); renderMarks(); }));
@@ -2092,7 +2142,8 @@ function showPop(rect){
   pop.innerHTML = `<div class="prow">` + Object.entries(HL_COLORS).map(([k,c]) => `<button type="button" class="dot${cur===k?' on':''}" data-c="${k}" style="background:${c}" aria-label="${k} highlight"></button>`).join('') + `</div>` +
     `<div class="arow"><button type="button" class="act" data-a="note">${p.existing && p.existing.note ? 'Edit note' : 'Note'}</button><button type="button" class="act" data-a="copy">Copy</button><button type="button" class="act" data-a="lookup">Look Up</button>` +
     (p.existing ? `<button type="button" class="act danger" data-a="del">Remove</button>` : '') + `</div>`;
-  pop.style.left = '0px'; pop.style.top = '0px'; pop.hidden = false;
+  if(pop._out){ pop._out.cancel(); pop._out=null; pop.style.pointerEvents=''; }
+  const appearing = pop.hidden; pop.style.left = '0px'; pop.style.top = '0px'; pop.hidden = false;
   const rr = reader.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
   const cx = rect ? (rect.left + rect.right) / 2 : rr.width / 2;
   const left = clamp(cx - pw / 2, 12, Math.max(12, rr.width - pw - 12));
@@ -2101,25 +2152,26 @@ function showPop(rect){
   else { y = rect ? rect.top - ph - 12 : rr.height / 2; if(y < 56) y = rect ? rect.bottom + 12 : 56; }
   y = clamp(y, 8, rr.height - ph - 8);
   pop.style.left = left + 'px'; pop.style.top = y + 'px';
+  if(appearing && motionOK()){ pop.style.transformOrigin = `${Math.round(cx - left)}px ${rect && y < rect.top ? '100%' : '0'}`; pop.animate(ANIM.pop, {duration:200, easing:MOTION_IN}); }
   $$('.dot', pop).forEach(b => b.addEventListener('click', () => setHighlight(b.dataset.c)));
   $$('.act', pop).forEach(b => b.addEventListener('click', () => popAction(b.dataset.a)));
 }
-function hidePop(){ const pop=$('#pop'); if(!pop.hidden){ pop.hidden=true; } if(R.pending && !R.pending.existing){ try{ R.pending.contents.window.getSelection().removeAllRanges(); }catch(e){} } R.pending=null; }
+function hidePop(){ const pop=$('#pop'); conceal(pop, ANIM.pop, 110); if(R.pending && !R.pending.existing){ try{ R.pending.contents.window.getSelection().removeAllRanges(); }catch(e){} } R.pending=null; }
 function clearSelection(){ try{ R.pending && R.pending.contents.window.getSelection().removeAllRanges(); }catch(e){} }
 function setHighlight(color){
   const p=R.pending; if(!p) return;
   if(color && color !== S.hlColor){ S.hlColor = color; saveSettings(); }
   if(p.existing){ p.existing.color=color; addMark(p.existing); saveHighlights(); }
   else { const h={id:uid(), cfiRange:p.cfiRange, text:p.text.slice(0,2000), color, note:'', chapter:chapterLabelFor(R.loc && R.loc.start.href), created:Date.now()}; R.highlights.push(h); addMark(h); saveHighlights(); R.pending.existing=h; }
-  clearSelection(); hidePop(); toast('Highlighted', 1000);
+  clearSelection(); hidePop(); haptic('tick'); toast('Highlighted', 1000);
 }
 async function popAction(a){
   const p=R.pending; if(!p) return;
   if(a==='copy'){ await copyText(`“${p.text}” — ${R.item.title}${R.item.author?', '+R.item.author:''}`); clearSelection(); hidePop(); return; }
-  if(a==='lookup'){ const sentence = sentenceAround(p); clearSelection(); $('#pop').hidden=true; lookup(p.text, {context:{sentence, bookId:R.item && R.item.id, bookTitle:R.item && R.item.title}}); return; }
+  if(a==='lookup'){ const sentence = sentenceAround(p); clearSelection(); conceal($('#pop'), ANIM.pop, 110); lookup(p.text, {context:{sentence, bookId:R.item && R.item.id, bookTitle:R.item && R.item.title}}); return; }
   if(a==='del'){ if(p.existing) removeHighlight(p.existing); toast('Highlight removed', 1200); return; }
   if(a==='note'){ if(!p.existing){ const h={id:uid(), cfiRange:p.cfiRange, text:p.text.slice(0,2000), color:S.hlColor||'yellow', note:'', chapter:chapterLabelFor(R.loc && R.loc.start.href), created:Date.now()}; R.highlights.push(h); addMark(h); saveHighlights(); p.existing=h; clearSelection(); }
-    $('#pop').hidden=true; $('#notequote').textContent=p.existing.text; $('#notesw').style.background=HL_COLORS[p.existing.color]; $('#notetext').value=p.existing.note||''; R.noteFor=p.existing; openSheet('note'); setTimeout(()=>$('#notetext').focus(), 350); }
+    conceal($('#pop'), ANIM.pop, 110); $('#notequote').textContent=p.existing.text; $('#notesw').style.background=HL_COLORS[p.existing.color]; $('#notetext').value=p.existing.note||''; R.noteFor=p.existing; openSheet('note'); setTimeout(()=>$('#notetext').focus(), 350); }
 }
 $('#notesave').addEventListener('click', () => { if(R.noteFor){ R.noteFor.note=$('#notetext').value.trim(); saveHighlights(); toast('Note saved', 1200); } closeSheets(); hidePop(); });
 async function copyText(t){ const n=NATIVE(); if(n && n.copy){ try{ await n.copy(t); toast('Copied'); return true; }catch(e){} } try{ await navigator.clipboard.writeText(t); toast('Copied'); return true; }catch(e){ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch(x){} ta.remove(); toast(ok?'Copied':"Couldn't copy. Select the text and copy it yourself."); return ok; } }
@@ -2282,7 +2334,8 @@ async function lookup(raw, opts={}){
       (rest.length ? `<button type="button" class="more" data-g="${gi}">Show ${rest.length} more ${rest.length === 1 ? 'meaning' : 'meanings'}</button>` : '') + `</section>`;
   }).join('');
   const also = res.found.slice(1).map(f => f.word).filter(w => w !== main.word);
-  box.innerHTML = back + `<div class="dt"><h3>${esc(main.word)}</h3>${canSpeak() ? `<button type="button" class="dspeak" id="dspeak" aria-label="Say “${esc(main.word)}”">${ICON_SPEAK}</button>` : ''}</div>` + from + html +
+  const head = groups.flatMap(g => g.senses).flatMap(m => m[2] || []).find(x => x.toLowerCase() === main.word.toLowerCase()) || main.word;
+  box.innerHTML = back + `<div class="dt"><h3>${esc(head)}</h3>${canSpeak() ? `<button type="button" class="dspeak" id="dspeak" aria-label="Say “${esc(main.word)}”">${ICON_SPEAK}</button>` : ''}</div>` + from + html +
     (also.length ? `<div class="also">Also${also.map(w => `<button type="button" class="chip" data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div>` : '') +
     `<div class="dfoot"><button type="button" class="dsave${saved ? ' on' : ''}" id="dsave" aria-pressed="${saved}">${ICON_SAVE}${saved ? 'Saved' : 'Save word'}</button><span class="src">WordNet 3.1 · works offline</span></div>`;
   wireDict(box);
@@ -2343,7 +2396,7 @@ $('#searchform').addEventListener('submit', async e => {
 /* ---------- hooks the Android app calls ---------- */
 // Hardware back: close the innermost layer first. Returns false when there is nothing left to close.
 window.MG_back = function(){
-  if(!$('#confirm').hidden){ $('#confirm').hidden=true; return true; }
+  if(!$('#confirm').hidden){ conceal($('#confirm'), ANIM.fade, 150); return true; }
   if(reader.hidden) return false;
   if(!$('#pop').hidden){ hidePop(); return true; }
   if(openSheetId==='dict' && DICT.stack.length){ dictBack(); return true; }
@@ -2366,7 +2419,13 @@ window.MG_openFile = async function(f){
   }catch(e){ toast(e.message || "Couldn't open that file.", 4500); }
 };
 window.MG_toast = toast;
+// Back is the app's only while there is something to close (a book, a dialog); otherwise Android takes it,
+// which gives the system's predictive back-to-home animation.
+function syncBack(){ const n=NATIVE(); if(!n || !n.setBackHandled) return; const on = !reader.hidden || !$('#confirm').hidden; if(on !== syncBack.on){ syncBack.on = on; n.setBackHandled(on); } }
+new MutationObserver(syncBack).observe(reader, {attributes:true, attributeFilter:['hidden']});
+new MutationObserver(syncBack).observe($('#confirm'), {attributes:true, attributeFilter:['hidden']});
 function boot(){
+  syncBack();
   if(window.MG_FONT_CSS_URL && !document.getElementById('mg-font')){ const l=document.createElement('link'); l.id='mg-font'; l.rel='stylesheet'; l.href=window.MG_FONT_CSS_URL; document.head.appendChild(l); }
   applyReaderTheme();
   if(NATIVE()){
