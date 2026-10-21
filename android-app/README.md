@@ -29,7 +29,9 @@ Keep a backup of the keystore. If it's lost, future builds can't update the inst
 - Back button closes the innermost popup or sheet, then the book, then sends the app to the background.
 - "Open with" and "Share to" Marginalia for EPUB, MOBI/AZW3, PDF, FB2, CBZ and plain-text files. Generic `application/octet-stream` files are accepted too, because many file managers label ebooks that way; the app checks the content and explains when a file isn't a book.
 - Volume keys turn pages, and the screen stays on while a book is open. Both can be switched off in Themes & Settings → Options.
-- Native share and clipboard, status-bar icons that follow the reading theme, and a working dictionary lookup.
+- An offline English dictionary: `scripts/build-dict.mjs` turns WordNet 3.1 into small JSON files under `www/dict/` (about 17 MB on disk, 6 MB inside the APK), so a lookup reads only a few hundred kilobytes. WordNet's licence ships alongside the data.
+- Speak aloud uses the phone's own text-to-speech voices, which work offline.
+- Native share and clipboard, and status-bar icons that follow the reading theme.
 
 ## Building locally
 

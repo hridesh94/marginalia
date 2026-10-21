@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, existsSyn
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { buildDictionary } from './build-dict.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const nm = join(root, 'node_modules');
@@ -48,7 +49,11 @@ for (const [pkg, styles] of Object.entries(FONT_SETS)) {
 if (/\.woff'\)|url\(\.\/files/.test(fontCss)) throw new Error('Unexpected @fontsource CSS format');
 writeFileSync(join(out, 'fonts/fonts.css'), fontCss);
 
-// 3. Native bridge bundle
+// 3. Offline English dictionary (WordNet 3.1), read in small pieces by the Look Up sheet.
+const dict = buildDictionary(nm, join(out, 'dict'));
+console.log(`dictionary: ${dict.words} words, ${dict.meanings} meanings, ${dict.mb} MB`);
+
+// 4. Native bridge bundle
 await build({
   entryPoints: [join(root, 'src/native.js')],
   bundle: true,
@@ -59,12 +64,13 @@ await build({
   logLevel: 'warning',
 });
 
-// 4. Page
+// 5. Page
 let page = src;
 const swaps = [
   [/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/[^"]+">/, '<link rel="stylesheet" href="fonts/fonts.css">'],
   [/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/jszip\/[^"]+"><\/script>/,
     '<script>window.MG_FONT_CSS_URL = new URL("fonts/fonts.css", location.href).href;\n' +
+    'window.MG_DICT_BASE = new URL("dict/", location.href).href;\n' +
     'window.MG_LIBS = (function(){ const u = (p) => new URL(p, location.href).href; return { mobi: u("vendor/mobi.js"), fflate: u("vendor/fflate.js"), pdf: u("vendor/pdfjs/pdf.min.js"), pdfWorker: u("vendor/pdfjs/pdf.worker.min.js"),' +
     ' pdfAssets: { cMapUrl: u("vendor/pdfjs/cmaps/"), cMapPacked: true, standardFontDataUrl: u("vendor/pdfjs/standard_fonts/"), wasmUrl: u("vendor/pdfjs/wasm/"), iccUrl: u("vendor/pdfjs/iccs/") } }; })();</script>\n' +
     '<script src="native.js"></script>\n<script src="vendor/jszip.min.js"></script>'],

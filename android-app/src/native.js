@@ -5,6 +5,7 @@ import { Capacitor, registerPlugin, SystemBars, SystemBarsStyle } from '@capacit
 import { App } from '@capacitor/app';
 import { Share } from '@capacitor/share';
 import { Clipboard } from '@capacitor/clipboard';
+import { TextToSpeech } from '@capacitor-community/text-to-speech';
 
 if (Capacitor.isNativePlatform()) {
   const ReaderBridge = registerPlugin('ReaderBridge');
@@ -25,6 +26,9 @@ if (Capacitor.isNativePlatform()) {
     platform: Capacitor.getPlatform(),
     share: (text, title) => Share.share({ text, title, dialogTitle: 'Share quote' }),
     copy: (text) => Clipboard.write({ string: text }),
+    // Uses the phone's own voices, which work offline once installed.
+    speak: (text, lang) => TextToSpeech.speak({ text, lang: lang || 'en-US', rate: 0.95 }),
+    stopSpeaking: () => TextToSpeech.stop().catch(() => {}),
     setReading: (opts) => ReaderBridge.setReading(opts).catch(() => {}),
     // dark === true: light icons for a dark page; false: dark icons; null: follow the system theme
     setBars: (dark) =>

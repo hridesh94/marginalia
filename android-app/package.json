@@ -9,6 +9,7 @@
     "sync": "node scripts/build-web.mjs && cap sync android"
   },
   "dependencies": {
+    "@capacitor-community/text-to-speech": "8.0.2",
     "@capacitor/android": "8.5.3",
     "@capacitor/app": "8.1.2",
     "@capacitor/clipboard": "8.0.1",
@@ -25,6 +26,8 @@
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.3",
-    "esbuild": "0.28.2"
+    "esbuild": "0.28.2",
+    "wndb-with-exceptions": "3.0.2",
+    "wordnet-db": "3.1.14"
   }
 }

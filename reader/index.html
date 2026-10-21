@@ -122,7 +122,9 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .sb{overflow-y:auto;overscroll-behavior:contain;flex:1;min-height:0;padding:0 0 12px}
 .sb .pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .list{list-style:none;margin:0;padding:0}
-.list li{border-top:1px solid var(--r-sep)}
+.list li{border-top:1px solid var(--r-sep);display:flex;align-items:center}
+.list li>.it{flex:1;min-width:0}
+.list li>.del{flex:none;margin-right:max(10px,env(safe-area-inset-right,0px))}
 .list li:first-child{border-top:0}
 .list .it{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box;min-width:0}
 .list .it:active{background:var(--r-fill)}
@@ -193,6 +195,35 @@ mark{background:rgba(255,214,10,.55);color:inherit;border-radius:2px}
 .def li+li{margin-top:4px}
 .def .ex{color:var(--r-muted);font-size:14px}
 .def a{color:var(--accent)}
+.def .dt{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.def .dt h3{font-size:30px;line-height:1.15;overflow-wrap:anywhere;min-width:0}
+.def .dspeak{flex:none;width:40px;height:40px;border-radius:50%;background:var(--r-fill);display:flex;align-items:center;justify-content:center;color:var(--r-fg)}
+.def .dspeak svg.i{width:20px;height:20px}
+.def .dback{display:inline-flex;align-items:center;gap:2px;color:var(--accent);font-size:15px;margin:0 0 8px -4px;padding:4px}
+.def .dback svg.i{width:16px;height:16px;stroke-width:2.4}
+.def .from{color:var(--r-muted);font-size:14px;margin:2px 0 4px}
+.def .dg{margin-top:14px}
+.def .dg .pos{margin:0 0 6px}
+.def .dg ol{padding-left:22px}
+.def .dg li{padding-left:2px}
+.def .dg li+li{margin-top:10px}
+.def .dd{font-size:15.5px;line-height:1.45}
+.def .ex{font-style:italic;margin-top:3px;line-height:1.4}
+.def .syn{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;align-items:center}
+.def .syn span{font-size:12px;color:var(--r-muted);margin-right:2px}
+.def .chip{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--r-fill);color:var(--r-fg)}
+.def .chip:active{opacity:.7}
+.def .more{color:var(--accent);font-size:14px;margin:10px 0 0 22px}
+.def .also{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px;font-size:13px;color:var(--r-muted)}
+.def .dfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1px solid var(--r-sep)}
+.def .dfoot .src{font-size:12px;color:var(--r-muted)}
+.def .dsave{display:inline-flex;align-items:center;gap:6px;background:var(--r-fill);color:var(--r-fg);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600}
+.def .dsave.on{background:var(--accent);color:#fff}
+.def .dsave svg.i{width:16px;height:16px}
+.def .online{margin-top:14px}
+.def .online .btn{background:var(--accent);color:#fff}
+.list .it .tx .l1 b{font-weight:700}
+.list .it .ctx{font-style:italic}
 textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:0;border-radius:12px;background:var(--r-fill);padding:12px;font-size:16px;line-height:1.4;resize:vertical;color:var(--r-fg)}
 .acts{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px 16px}
 .acts .btn{background:var(--accent);color:#fff}
@@ -335,7 +366,7 @@ textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:0;border-ra
     <!-- Bookmarks & Highlights -->
     <div class="sheet tall" id="sh-marks" role="dialog" aria-label="Bookmarks and highlights">
       <div class="sh"><h2>Bookmarks &amp; Highlights</h2><button class="x" type="button" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div class="seg" id="markseg"><button type="button" class="on" data-v="bm">Bookmarks</button><button type="button" data-v="hl">Highlights</button></div>
+      <div class="seg" id="markseg"><button type="button" class="on" data-v="bm">Bookmarks</button><button type="button" data-v="hl">Highlights</button><button type="button" data-v="wd">Words</button></div>
       <div class="sb"><ul class="list" id="marklist"></ul></div>
     </div>
 
@@ -1249,7 +1280,7 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
 const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36);
-const SAMPLE_B64 = "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";
+const SAMPLE_B64 = "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";
 
 /* ---------- storage ---------- */
 const LS = {
@@ -1833,7 +1864,7 @@ function openSheet(id, keepScrim){
   el.classList.add('open'); el.removeAttribute('inert');
   if(id==='toc') renderToc(); if(id==='marks') renderMarks(); if(id==='settings') renderSettings(); if(id==='options') renderOptions(); if(id==='search') setTimeout(()=>$('#q').focus(), 350);
 }
-function closeSheets(keepOpenId){ $$('.sheet.open').forEach(el => el.classList.remove('open')); openSheetId=null; if(!keepOpenId){ if(menu.hidden) scrim.hidden=true; } }
+function closeSheets(keepOpenId){ if(openSheetId==='dict'){ const n=NATIVE(); if(n && n.stopSpeaking) n.stopSpeaking(); } $$('.sheet.open').forEach(el => el.classList.remove('open')); openSheetId=null; if(!keepOpenId){ if(menu.hidden) scrim.hidden=true; } }
 $$('[data-close]').forEach(b => b.addEventListener('click', () => { closeSheets(); showChrome(false); }));
 $$('.sheet').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
 
@@ -1903,6 +1934,12 @@ function renderMarks(){
     ul.innerHTML = R.bookmarks.slice().sort(sortCfi).map(b => `<li><button type="button" class="it" data-id="${b.id}"><svg class="i" viewBox="0 0 24 24" style="color:${ACCENT}"><path d="M6 3.5h12v17l-6-4.2-6 4.2z" fill="currentColor"/></svg><div class="tx"><div class="l1">${esc(b.excerpt||b.chapter||'Bookmark')}</div><div class="l2"><span>${esc(b.chapter||'')}</span>${b.page?`<span>Page ${b.page}</span>`:''}<span>${new Date(b.created).toLocaleDateString()}</span></div></div></button><button type="button" class="del" data-del="${b.id}" aria-label="Remove bookmark"><svg class="i" viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></li>`).join('');
     $$('.it', ul).forEach(b => b.addEventListener('click', () => { const bm=R.bookmarks.find(x=>x.id===b.dataset.id); if(bm){ closeSheets(); showChrome(false); R.rendition.display(bm.cfi); } }));
     $$('.del', ul).forEach(b => b.addEventListener('click', () => { R.bookmarks=R.bookmarks.filter(x=>x.id!==b.dataset.del); LS.set('bm:'+R.item.id, R.bookmarks); updateChrome(); renderMarks(); }));
+  } else if(markTab==='wd'){
+    const words = vocabFor(R.item && R.item.id);
+    if(!words.length){ ul.innerHTML = `<div class="msg">No saved words yet. Press and hold a word, tap Look Up, then tap Save word.</div>`; return; }
+    ul.innerHTML = words.map(v => `<li><button type="button" class="it" data-w="${esc(v.word)}"><div class="tx"><div class="l1"><b>${esc(v.word)}</b>${v.def ? ' · ' + esc(v.def) : ''}</div>${v.sentence ? `<div class="l2"><span class="ctx">“${esc(v.sentence)}”</span></div>` : ''}<div class="l2"><span>${new Date(v.added).toLocaleDateString()}</span></div></div></button><button type="button" class="del" data-del="${esc(v.id)}" aria-label="Remove saved word"><svg class="i" viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></li>`).join('');
+    $$('.it', ul).forEach(b => b.addEventListener('click', () => lookup(b.dataset.w, {fromList:true})));
+    $$('.del', ul).forEach(b => b.addEventListener('click', () => { vocabRemove(b.dataset.del); renderMarks(); }));
   } else {
     if(!R.highlights.length){ ul.innerHTML = `<div class="msg">No highlights yet. Press and hold a word in the book, then pick a colour.</div>`; return; }
     ul.innerHTML = R.highlights.slice().sort(sortCfi).map(h => `<li><button type="button" class="it" data-id="${h.id}"><div class="sw" style="background:${HL_COLORS[h.color]||HL_COLORS.yellow}"></div><div class="tx"><div class="l1">${esc(h.text)}</div>${h.note?`<div class="note">${esc(h.note)}</div>`:''}<div class="l2"><span>${esc(h.chapter||'')}</span><span>${new Date(h.created).toLocaleDateString()}</span></div></div></button><button type="button" class="del" data-del="${h.id}" aria-label="Remove highlight"><svg class="i" viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></li>`).join('');
@@ -1961,7 +1998,7 @@ function setHighlight(color){
 async function popAction(a){
   const p=R.pending; if(!p) return;
   if(a==='copy'){ await copyText(`“${p.text}” — ${R.item.title}${R.item.author?', '+R.item.author:''}`); clearSelection(); hidePop(); return; }
-  if(a==='lookup'){ const w = p.text.split(/\s+/)[0].replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,''); clearSelection(); $('#pop').hidden=true; lookup(w || p.text); return; }
+  if(a==='lookup'){ const sentence = sentenceAround(p); clearSelection(); $('#pop').hidden=true; lookup(p.text, {context:{sentence, bookId:R.item && R.item.id, bookTitle:R.item && R.item.title}}); return; }
   if(a==='del'){ if(p.existing) removeHighlight(p.existing); toast('Highlight removed', 1200); return; }
   if(a==='note'){ if(!p.existing){ const h={id:uid(), cfiRange:p.cfiRange, text:p.text.slice(0,2000), color:'yellow', note:'', chapter:chapterLabelFor(R.loc && R.loc.start.href), created:Date.now()}; R.highlights.push(h); addMark(h); saveHighlights(); p.existing=h; clearSelection(); }
     $('#pop').hidden=true; $('#notequote').textContent=p.existing.text; $('#notesw').style.background=HL_COLORS[p.existing.color]; $('#notetext').value=p.existing.note||''; R.noteFor=p.existing; openSheet('note'); setTimeout(()=>$('#notetext').focus(), 350); }
@@ -1978,21 +2015,174 @@ async function shareQuote(){
   await copyText(payload);
 }
 
-/* ---------- dictionary ---------- */
-async function lookup(word){
-  const box=$('#dict'); openSheet('dict'); box.innerHTML = `<h3>${esc(word)}</h3><div class="ph">Looking up…</div>`;
+/* ---------- dictionary ----------
+   An offline English dictionary (WordNet 3.1) ships with the app as small JSON files under MG_DICT_BASE:
+   w/<xx>.json maps each word to its meaning ids, m/<n>.json holds 1000 meanings each, exc.json lists irregular
+   forms. A lookup reads one word file and one or two meaning files. Without these files (the web preview),
+   the sheet uses an online dictionary instead. */
+const DICT = {base: window.MG_DICT_BASE || null, words:new Map(), chunks:new Map(), exc:null, chunk:1000, stack:[], ctx:null, cur:null, seq:0};
+const POS_NAME = {n:'noun', v:'verb', a:'adjective', r:'adverb'};
+const SENSES_SHOWN = 3;
+const STOP = new Set('a an the of to in on at by for and or but is are was were be been it its as with from that this these those his her their our your my he she they we you i not no so if'.split(' '));
+const DETACH = {
+  n: [['s',''],['ses','s'],['xes','x'],['zes','z'],['ches','ch'],['shes','sh'],['men','man'],['ies','y']],
+  v: [['s',''],['ies','y'],['es','e'],['es',''],['ed','e'],['ed',''],['ing','e'],['ing','']],
+  a: [['er',''],['est',''],['er','e'],['est','e']],
+  r: []
+};
+const dictShardKey = w => { const k=w.slice(0,2).replace(/[^a-z0-9]/g,'_'); return k.length===2 ? k : (k+'_').slice(0,2); };
+function dictFetch(path){ return fetch(DICT.base + path).then(r => { if(!r.ok) throw new Error('missing ' + path); return r.json(); }); }
+function dictCached(map, key, path){ if(!map.has(key)) map.set(key, dictFetch(path).catch(e => { map.delete(key); throw e; })); return map.get(key); }
+const dictShard = w => dictCached(DICT.words, dictShardKey(w), 'w/' + dictShardKey(w) + '.json');
+const dictChunk = i => dictCached(DICT.chunks, i, 'm/' + i + '.json');
+function dictExc(){ if(!DICT.exc) DICT.exc = dictFetch('exc.json').catch(() => ({n:{}, v:{}, a:{}, r:{}})); return DICT.exc; }
+// WordNet's own rules for finding a word's base form ("princesses" -> "princess", "wept" -> "weep").
+function baseForms(w, exc){
+  const out=[w];
+  for(const pos of ['n','v','a','r']){
+    (exc[pos][w] || []).forEach(b => out.push(b));
+    for(const [suf, rep] of DETACH[pos]){
+      if(w.length > suf.length + 1 && w.endsWith(suf)){
+        const b = w.slice(0, -suf.length) + rep; out.push(b);
+        if(!rep && /^(ed|ing|er|est)$/.test(suf) && /([b-df-hj-np-tv-z])\1$/.test(b)) out.push(b.slice(0, -1)); // "stopped" -> "stop"
+      }
+    }
+  }
+  return [...new Set(out)];
+}
+function dictNormalize(raw){
+  return String(raw||'').normalize('NFC').toLowerCase().replace(/[‘’ʼ]/g, "'").replace(/­/g, '')
+    .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '').replace(/'s$/, '').replace(/\s+/g, ' ').trim();
+}
+async function dictFind(raw){
+  const exc = await dictExc();
+  const norm = dictNormalize(raw);
+  if(!norm) return {query:'', found:[]};
+  const words = norm.split(' ');
+  const tries = [];
+  if(words.length > 1 && words.length <= 4){ const [first, ...rest] = words; baseForms(first, exc).forEach(b => tries.push([b, ...rest].join(' '))); }
+  const single = (words.length === 1 ? norm : (words.find(w => !STOP.has(w)) || words[0])).replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+  tries.push(...baseForms(single, exc));
+  if(single.includes('-')) tries.push(single.replace(/-/g, ' '), single.replace(/-/g, ''), ...baseForms(single.split('-').pop(), exc));
+  const found = [];
+  for(const t of [...new Set(tries)]){
+    if(!t) continue;
+    const shard = await dictShard(t);
+    if(shard[t]) found.push({word:t, groups:shard[t]});
+    if(found.length >= 3) break;
+  }
+  return {query: words.length === 1 ? norm : single, phrase: words.length > 1 ? norm : null, found};
+}
+async function dictMeanings(groups){
+  const need = [...new Set(groups.flatMap(g => g[1]).map(i => Math.floor(i / DICT.chunk)))];
+  const loaded = new Map(await Promise.all(need.map(async c => [c, await dictChunk(c)])));
+  return groups.map(([pos, ids]) => ({pos, senses: ids.map(i => loaded.get(Math.floor(i / DICT.chunk))[i % DICT.chunk]).filter(m => m && m[0])}));
+}
+// The sentence a selection came from, kept with saved words.
+function sentenceAround(p){
+  try{
+    const rng = p.contents.range(p.cfiRange); let el = rng.startContainer;
+    while(el && el.nodeType !== 1) el = el.parentNode;
+    const block = (el && el.closest && el.closest('p,li,blockquote,dd,td,h1,h2,h3,h4,h5,h6')) || el;
+    const txt = (block && block.textContent || '').replace(/\s+/g, ' ').trim();
+    const sel = p.text.replace(/\s+/g, ' ').trim();
+    const parts = txt.match(/[^.!?…]+[.!?…]+["'’”)]*|[^.!?…]+$/g) || [txt];
+    return (parts.find(x => x.includes(sel)) || txt).trim().slice(0, 300);
+  }catch(e){ return ''; }
+}
+/* saved words, across all books */
+const vocabAll = () => LS.get('vocab', []);
+const vocabFor = bookId => vocabAll().filter(v => v.bookId === bookId).sort((a,b) => b.added - a.added);
+const vocabHas = (word, bookId) => vocabAll().some(v => v.word === word && v.bookId === bookId);
+function vocabToggle(entry){
+  const all = vocabAll(); const i = all.findIndex(v => v.word === entry.word && v.bookId === entry.bookId);
+  if(i >= 0){ all.splice(i, 1); LS.set('vocab', all); return false; }
+  all.push(Object.assign({id: uid(), added: Date.now()}, entry)); LS.set('vocab', all); return true;
+}
+function vocabRemove(id){ LS.set('vocab', vocabAll().filter(v => v.id !== id)); }
+
+const ICON_SPEAK = '<svg class="i" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+const ICON_BACK = '<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>';
+const ICON_SAVE = '<svg class="i" viewBox="0 0 24 24"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>';
+const canSpeak = () => { const n=NATIVE(); return !!((n && n.speak) || ('speechSynthesis' in window && window.SpeechSynthesisUtterance)); };
+function speakWord(w){
+  const n=NATIVE();
+  if(n && n.speak){ n.speak(w).catch(() => toast("Couldn't speak. Install a text-to-speech voice in Android settings.", 3500)); return; }
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; u.rate = .95; speechSynthesis.speak(u); }catch(e){}
+}
+// opts.context: {sentence, bookId, bookTitle} from the reader; opts.push: keep the back history (synonym taps).
+async function lookup(raw, opts={}){
+  const box=$('#dict');
+  if(opts.context !== undefined) DICT.ctx = opts.context;
+  if(opts.fromList) DICT.ctx = {sentence:'', bookId:R.item && R.item.id, bookTitle:R.item && R.item.title};
+  if(!opts.push) DICT.stack = [];
+  if(openSheetId !== 'dict') openSheet('dict');
+  const seq = ++DICT.seq;
+  if(!DICT.base) return lookupOnline(dictNormalize(raw).split(' ')[0] || raw, false);
+  box.innerHTML = `<div class="ph">Looking up…</div>`;
+  let res;
+  try{ res = await dictFind(raw); }catch(e){ return lookupOnline(dictNormalize(raw).split(' ')[0] || raw, true); }
+  if(seq !== DICT.seq) return;
+  const back = DICT.stack.length ? `<button type="button" class="dback" id="dback">${ICON_BACK}${esc(DICT.stack[DICT.stack.length-1])}</button>` : '';
+  if(!res.found.length){
+    DICT.cur = null;
+    const shown = String(raw||'').replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '').replace(/\s+/g, ' ').trim() || res.query;
+    box.innerHTML = back + `<div class="dt"><h3>${esc(shown)}</h3></div><div class="from">This word isn't in the offline dictionary.</div>` +
+      `<div class="online"><button type="button" class="btn" id="donline">Search online</button></div>`;
+    $('#donline', box).onclick = () => lookupOnline(res.query || raw, false);
+    wireDict(box); return;
+  }
+  const main = res.found[0];
+  const groups = await dictMeanings(main.groups);
+  if(seq !== DICT.seq) return;
+  const firstDef = (groups[0] && groups[0].senses[0] || [''])[0];
+  DICT.cur = {word: main.word, def: firstDef, pos: groups[0] ? POS_NAME[groups[0].pos] : ''};
+  const ctx = DICT.ctx || {};
+  const saved = vocabHas(main.word, ctx.bookId);
+  const asked = res.phrase && main.word !== res.phrase && !main.word.includes(' ') ? res.query : (res.phrase || res.query);
+  const from = asked && asked !== main.word ? `<div class="from">From “${esc(asked)}”</div>` : '';
+  const sense = (m, word) => `<li><div class="dd">${esc(m[0])}</div>${m[1] ? `<div class="ex">“${esc(m[1])}”</div>` : ''}` +
+    (() => { const syn = [...new Set((m[2] || []).filter(x => x.toLowerCase() !== word))].slice(0, 6); return syn.length ? `<div class="syn"><span>Similar</span>${syn.map(x => `<button type="button" class="chip" data-w="${esc(x)}">${esc(x)}</button>`).join('')}</div>` : ''; })() + `</li>`;
+  const html = groups.filter(g => g.senses.length).map((g, gi) => {
+    const shown = g.senses.slice(0, SENSES_SHOWN), rest = g.senses.slice(SENSES_SHOWN);
+    return `<section class="dg"><div class="pos">${POS_NAME[g.pos]}</div><ol>${shown.map(m => sense(m, main.word)).join('')}${rest.map(m => sense(m, main.word).replace('<li>', '<li hidden data-more>')).join('')}</ol>` +
+      (rest.length ? `<button type="button" class="more" data-g="${gi}">Show ${rest.length} more ${rest.length === 1 ? 'meaning' : 'meanings'}</button>` : '') + `</section>`;
+  }).join('');
+  const also = res.found.slice(1).map(f => f.word).filter(w => w !== main.word);
+  box.innerHTML = back + `<div class="dt"><h3>${esc(main.word)}</h3>${canSpeak() ? `<button type="button" class="dspeak" id="dspeak" aria-label="Say “${esc(main.word)}”">${ICON_SPEAK}</button>` : ''}</div>` + from + html +
+    (also.length ? `<div class="also">Also${also.map(w => `<button type="button" class="chip" data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div>` : '') +
+    `<div class="dfoot"><button type="button" class="dsave${saved ? ' on' : ''}" id="dsave" aria-pressed="${saved}">${ICON_SAVE}${saved ? 'Saved' : 'Save word'}</button><span class="src">WordNet 3.1 · works offline</span></div>`;
+  wireDict(box);
+  const sp=$('#dspeak', box); if(sp) sp.onclick = () => speakWord(main.word);
+  $('#dsave', box).onclick = () => {
+    const on = vocabToggle({word: main.word, def: firstDef, pos: DICT.cur.pos, sentence: ctx.sentence || '', bookId: ctx.bookId, bookTitle: ctx.bookTitle || ''});
+    const b=$('#dsave', box); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.innerHTML = ICON_SAVE + (on ? 'Saved' : 'Save word');
+    toast(on ? `Saved “${main.word}” to Words` : 'Removed from Words', 1400);
+  };
+  $$('.more', box).forEach(b => b.onclick = () => { b.closest('.dg').querySelectorAll('[data-more]').forEach(li => li.hidden = false); b.remove(); });
+  $('.sb', $('#sh-dict')).scrollTop = 0;
+}
+function wireDict(box){
+  $$('.chip[data-w]', box).forEach(c => c.onclick = () => { if(DICT.cur) DICT.stack.push(DICT.cur.word); lookup(c.dataset.w, {push:true}); });
+  const b=$('#dback', box); if(b) b.onclick = dictBack;
+}
+function dictBack(){ const prev = DICT.stack.pop(); if(prev) lookup(prev, {push:true}); }
+async function lookupOnline(word, offlineFailed){
+  const box=$('#dict');
+  box.innerHTML = `<div class="dt"><h3>${esc(word)}</h3></div><div class="from">Looking up online…</div>`;
   const ctrl = new AbortController(); const t=setTimeout(()=>ctrl.abort(), 7000);
+  const web = `<p><a href="https://www.google.com/search?q=${encodeURIComponent('define '+word)}" target="_blank" rel="noopener">Search the web for “${esc(word)}”</a></p>`;
   try{
     const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(word.toLowerCase()), {signal:ctrl.signal});
     clearTimeout(t);
-    if(r.status===404){ box.innerHTML = `<h3>${esc(word)}</h3><div class="ph">No dictionary entry found.</div><p><a href="https://www.google.com/search?q=${encodeURIComponent('define '+word)}" target="_blank" rel="noopener">Search the web for “${esc(word)}”</a></p>`; return; }
+    if(r.status===404){ box.innerHTML = `<div class="dt"><h3>${esc(word)}</h3></div><div class="from">No dictionary entry found.</div>${web}`; return; }
     if(!r.ok) throw new Error('http '+r.status);
     const data = await r.json(); const e0 = Array.isArray(data) && data[0]; if(!e0) throw new Error('empty');
     const phon = e0.phonetic || (e0.phonetics||[]).map(p=>p.text).find(Boolean) || '';
-    box.innerHTML = `<h3>${esc(e0.word||word)}</h3><div class="ph">${esc(phon)}</div>` + (e0.meanings||[]).slice(0,4).map(m => `<div class="pos">${esc(m.partOfSpeech)}</div><ol>${(m.definitions||[]).slice(0,3).map(d => `<li>${esc(d.definition)}${d.example?`<div class="ex">“${esc(d.example)}”</div>`:''}</li>`).join('')}</ol>`).join('') +
-      `<div class="ph" style="margin-top:14px">Source: Free Dictionary API</div>`;
+    box.innerHTML = `<div class="dt"><h3>${esc(e0.word||word)}</h3></div><div class="from">${esc(phon)}</div>` + (e0.meanings||[]).slice(0,4).map(m => `<section class="dg"><div class="pos">${esc(m.partOfSpeech)}</div><ol>${(m.definitions||[]).slice(0,3).map(d => `<li><div class="dd">${esc(d.definition)}</div>${d.example?`<div class="ex">“${esc(d.example)}”</div>`:''}</li>`).join('')}</ol></section>`).join('') +
+      `<div class="dfoot"><span class="src">Online result from the Free Dictionary API</span></div>`;
   }catch(e){ clearTimeout(t);
-    box.innerHTML = `<h3>${esc(word)}</h3><div class="ph">Couldn't reach the dictionary.</div><p style="font-size:14px;line-height:1.5;color:var(--r-muted)">Lookups need an internet connection, and some networks or viewers block the dictionary service entirely. You can still search for it:</p><p><a href="https://www.google.com/search?q=${encodeURIComponent('define '+word)}" target="_blank" rel="noopener">Search the web for “${esc(word)}”</a></p>`; }
+    box.innerHTML = `<div class="dt"><h3>${esc(word)}</h3></div><div class="from">${offlineFailed ? "The offline dictionary couldn't be read, and the online dictionary couldn't be reached." : "Couldn't reach the online dictionary. Check your connection."}</div>${web}`; }
 }
 
 /* ---------- search ---------- */
@@ -2021,6 +2211,7 @@ window.MG_back = function(){
   if(!$('#confirm').hidden){ $('#confirm').hidden=true; return true; }
   if(reader.hidden) return false;
   if(!$('#pop').hidden){ hidePop(); return true; }
+  if(openSheetId==='dict' && DICT.stack.length){ dictBack(); return true; }
   if(openSheetId){ if(openSheetId==='options') openSheet('settings'); else { closeSheets(); showChrome(false); } return true; }
   if(!menu.hidden){ closeMenu(); showChrome(false); return true; }
   closeBook(true); return true;
