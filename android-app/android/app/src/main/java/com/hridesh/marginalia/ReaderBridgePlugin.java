@@ -6,7 +6,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.OpenableColumns;
 import android.util.Base64;
+import android.view.Window;
 import android.view.WindowManager;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -21,6 +25,7 @@ import java.io.InputStream;
  *  - hands over books opened with "Open with" / "Share to Marginalia"
  *  - turns pages with the volume keys while a book is open
  *  - keeps the screen on while a book is open
+ *  - hides the status and navigation bars while a book is open (a swipe from the edge shows them briefly)
  */
 @CapacitorPlugin(name = "ReaderBridge")
 public class ReaderBridgePlugin extends Plugin {
@@ -29,8 +34,10 @@ public class ReaderBridgePlugin extends Plugin {
 
     private static volatile ReaderBridgePlugin instance;
     static volatile boolean volumeKeysEnabled = false;
-    /** While a book is open, the selection toolbar shows the reader's own actions (see ReaderWebView). */
+    /** While a book is open, Android's selection toolbar is replaced by the reader's own bar (see ReaderWebView). */
     static volatile boolean readerMenuEnabled = false;
+    /** True while a book is open: the system bars stay hidden. */
+    static volatile boolean immersive = false;
 
     private Uri pendingUri;
 
@@ -95,8 +102,10 @@ public class ReaderBridgePlugin extends Plugin {
         final boolean keepAwake = Boolean.TRUE.equals(call.getBoolean("keepAwake", false));
         volumeKeysEnabled = reading && volumeKeys;
         readerMenuEnabled = reading;
+        immersive = reading;
         getActivity()
             .runOnUiThread(() -> {
+                applyImmersive(getActivity().getWindow());
                 if (reading && keepAwake) {
                     getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 } else {
@@ -106,18 +115,23 @@ public class ReaderBridgePlugin extends Plugin {
         call.resolve();
     }
 
-    /** Tells the reader whether the single selection menu is available on this device. */
+    /** Hides the status and navigation bars while reading, shows them again in the library. */
+    static void applyImmersive(Window window) {
+        WindowInsetsControllerCompat bars = WindowCompat.getInsetsController(window, window.getDecorView());
+        if (immersive) {
+            bars.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            bars.hide(WindowInsetsCompat.Type.systemBars());
+        } else {
+            bars.show(WindowInsetsCompat.Type.systemBars());
+        }
+    }
+
+    /** Tells the reader that Android's selection toolbar is suppressed on this device, so it shows its own bar. */
     @PluginMethod
     public void getInfo(PluginCall call) {
         JSObject ret = new JSObject();
-        ret.put("selectionMenu", ReaderWebView.installed);
+        ret.put("quietSelection", ReaderWebView.installed);
         call.resolve(ret);
-    }
-
-    void onSelectionAction(String action) {
-        JSObject data = new JSObject();
-        data.put("action", action);
-        notifyListeners("selectionAction", data);
     }
 
     void onVolumeKey(String direction) {

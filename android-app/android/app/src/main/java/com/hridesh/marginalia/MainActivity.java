@@ -12,6 +12,13 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
     }
 
+    /** Some dialogs (the share sheet, the keyboard) bring the system bars back; hide them again while reading. */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && ReaderBridgePlugin.immersive) ReaderBridgePlugin.applyImmersive(getWindow());
+    }
+
     /** Volume down turns forward, volume up turns back, while a book is open and the option is on. */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {

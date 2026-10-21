@@ -369,7 +369,7 @@ textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:1px solid v
         <div class="opt" data-text><label for="fontsel">Font</label><select id="fontsel"><option value="original">Book's font</option><option value="charter">Charter</option><option value="literata">Literata</option><option value="georgia">Georgia</option><option value="sans">Sans-serif</option></select></div>
         <div class="opt" data-text><span>Line spacing</span><div class="seg2" id="lhseg"><button type="button" data-v="0">Book</button><button type="button" data-v="1.35">Tight</button><button type="button" data-v="1.55">Normal</button><button type="button" data-v="1.8">Loose</button></div></div>
         <div class="opt" data-text><span>Margins</span><div class="seg2" id="mgseg"><button type="button" data-v="narrow">Narrow</button><button type="button" data-v="normal">Normal</button><button type="button" data-v="wide">Wide</button></div></div>
-        <div class="opt" data-text><span>Alignment</span><div class="seg2" id="jseg"><button type="button" data-v="book">Book</button><button type="button" data-v="left">Left</button><button type="button" data-v="justify">Justify</button></div></div>
+        <div class="opt" data-text><span>Alignment</span><div class="seg2" id="jseg"><button type="button" data-v="left">Left</button><button type="button" data-v="book">Book</button><button type="button" data-v="justify">Justify</button></div><span class="why">Left keeps the book's layout but sets justified text ragged-right, with even word spacing and no split words.</span></div>
         <div class="opt" data-native hidden><span>Turn pages with volume keys</span><button type="button" class="sw2" id="volkeys" role="switch" aria-checked="true" aria-label="Turn pages with volume keys"></button></div>
         <div class="opt" data-native hidden><span>Keep screen on while reading</span><button type="button" class="sw2" id="keepawake" role="switch" aria-checked="true" aria-label="Keep screen on while reading"></button></div>
       </div>
@@ -1298,7 +1298,7 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
 const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36);
-const SAMPLE_B64 = "UEsDBBQAAAAAAAAAIQBvYassFAAAABQAAAAIAAAAbWltZXR5cGVhcHBsaWNhdGlvbi9lcHViK3ppcFBLAwQUAAAACAA7XFVdHgvXyZkAAADdAAAAFgAAAE1FVEEtSU5GL2NvbnRhaW5lci54bWxVjsEOwiAQRH+l4Wpa9EoAExPPmvgFK90qEXYJUKN/L3qoeptk5s2M3j5i6O6Yi2cyYjOsxdZqx1TBE+Z/p2tZKkbMmRRD8UURRCyqOsUJaWQ3R6SqPjG1lAirM3OdfMDyld00h9AnqFcjDvvd8STfQMMHTpPoIo4e+vpMaASkFLyD2o5IxnMqDXM3uOCqLQlptfzpl8uufQFQSwMEFAAAAAgAO1xVXSNzSC6OAQAAKQQAABEAAABPRUJQUy9jb250ZW50Lm9wZp2TwW6cMBCG730Ky9cKDOxWqRDrHHPKJW/g2gM7CjauMdnN23cwu5AqG1XdE/I/v79/Ziyax7Pt2RuEEQd34GVecAZODwZdd+BTbLOf/FF+a7zSr6oDRm43HvgxRl8LcTqdcjS+zYfQiaooHsTgW84mh78nyNCAi9giBCKh4VtMRTGysRCVUVEt0Nroleun0Cem0QJ6sMQZRZmXgl+8FPOPJmRjdB0x9iBfQM3jsCdqAhqx6rNDB1BxCPJZhQ6d6lElw1WeLb1y3USzS3Cptp7n4jYjQ7OMKafgarvy6m6Orct0d7Mv4zOnLBy4Hmg1nOnBRapfzhlaSuFCNuK6KXoIqxy2MEbZYASbQp0+c3YMQCuJg87T0YJBlcV3T3TlfY9aRVq9OGcm/iLHd9rjjF4hHyMvsCTl41v3Ny55BMmfGcV69Vjm52Ok+tedzOXPiHJDVHciqg2xuxOx2xD7OxH7DfHjvxBie+LRowNGj7o88oInKCUs6OKa+VEsb4nVLXF3S9ynJlI0fS8/vvwDUEsDBBQAAAAIADtcVV2SYElPVAEAAFIDAAANAAAAT0VCUFMvdG9jLm5jeI2SUW+DIBDHvwrheZWq7dIZtI/dw5YtS5NljyhMSREaOFu7Tz90XYxzSX0Akrs/9/sfHN22tUInYZ00OsVhsMRI6MJwqcsUN/C52OBtRnXRIi/ULsUVwDEh5Hw+B5xJdwmMLclX/LC5J9FyuSZeSvBQsYstQpzRSjCe0VoAQ5rVIsUc8qSRHKPCaBAaPM7qpGa2lJopyZLSZ0USYpJR8nObm2IvQYmMgmghe/NB7xPtOiElfYySQaTZ6Zkd+/PVSA1I8hRr3+FRscuL5cL6jnGff2K5UNey70IVph4KDumrU+RskeKiCoO2glr1Bn8Zf2nhiBZNaTsB0DXBrGk0vw2NZkCjETSeQh9lWSm/wN0hbUA4xDRHuTEH//4Hd9tFPMNFPHKxmrrY+60Hc+k65W3sagZ2NcKup9gP01ikZG6ZvfR4B8aycsaHr//Fk98562Y/+wZQSwMEFAAAAAgAO1xVXY5wVAgRAQAAYQIAAA8AAABPRUJQUy9jb3Zlci5zdmetUt1ugjAUfpXmeDukA0VcKMk0m7veGxAocGJpl7azuKdfq+iyRJNdLOeiOT/fzzlpYQ4dGQchDYPe2o+nOHbOzV06V7qLE0pp7CeAOGxszyCjFEjPsestg3VIDsjdRo0MKKHEt0moloXmtb0PalEIBrPHrY8XiKdxT7LIgRzPzwRe0sUPOA/JGSyV5ECM1WrPPdV29bzONpdCNIHTwG35eOJOg3IgPzlQ0kZtNaDwlR33y2L1YLjGduoZ/PK82VVv9pr4WAEJdFEl615pBgM2jeBQvvOqQdkVcejekMz/X3L3iQ2/J7jM/iRoj8Iroq0E1r9MJNnVxOWyN028KUdsj4ZofwCuiVN6by6mws8pvwFQSwMEFAAAAAgAO1xVXdanMvOWAgAAfQQAAA8AAABPRUJQUy9jaDEueGh0bWxNVF1P20AQfOdXrPLSl2CX8lKQMSKlqBWNiqpUUN7Ovo19wrmz7s4x6a/v7NmESkl0H7O7szN7Ka5fdx3t2Qfj7NXiLPu4ILa108Y2V4shbk8/L67Lk6KNgAFqw9WijbG/zPNxHLPxPHO+yc8uLi7yV8EsyqJlpcsimthx+chd7XZc5NO2yKfLyukDgGfv91ifFH25aU0gfBSFneo68oCDCam+p63zxJVzLyGjP27wlNZLOsi671TNZCyxqltylufz1jRth29ETquns8AxImmgENUBWIpSVfPeIEXFcWS2tDfBxJAVeT8Rc6S0Bi8puqTGUaXqF4oOwUydqbzyh1Qiqp6KqrwBOhEs8qpcCspSbxACbrQ1HZMTJlBedRmtlW+MVZ1R5Hq2QTJ8ffi9moLvjdUIwNn65+q7nKVKUuX58XzCYPNwe3dc360+HddfVs8pBkqbGoJBKwiFi83T5v9k3zbrH7LPaNPOHK3aMWnHwX6ItFMxsr+cRaCg9gxFwBXjwmX21/RFnpbS2mhiS9YRv0b0g+ESWz3XrrEmIK46EPQFJ4t7CE039gAf4HVsVQRYKooEEgcUhIoIcxYejSImrEyWmLhMDbyNTKV0w5OrjEDEUWjdGCTKY0Qi1dLU1rvd0d2VGEW9d5FrqZLI3/5aAyo0Kk6usBZlhJytu0FzmAzG74ABSxlT0dmuEB3qCbX54P7uKamKZpH7dOv5iE3HSwoDhheKYkZCanCnNKehDdxtRVbtRts5nOqpnqKUZh7AJY3OvyCb5ffJleGGAj5SMxikkxcWUz5lk8KoC58g1GwAOqu9qVDCTCpamEh1q3rYH0QTUSR6k/wQRGDqVSONbQY/xchenocYbOzwxiefnn4u/xXlP1BLAwQUAAAACAA7XFVdPU+rCtsCAABjBQAADwAAAE9FQlBTL2NoMi54aHRtbG1UwW7dNhC85ysW79DTi1QjlzqWn9EkaNFDigI2UORISatHwhSpkCvLr1/fWVJOE7hHkrO7szMjdXfPs6cnTtnFcHu4an4+EIchji6cbw+rTG9/Odyd3nRWAAM05NuDFVnet+22bc32ronp3F5dX1+3z4o5nDrLZjx14sTz6XcWQScyKa5h7Np627UV08fxAvzVKxiu3nTL6cEyLebM5DLlxTshFySS2MS4C08uu94z/RMD54YezIInpq4/JXe2goNLaNafSIvWFGiKaTNpPL7gPE//B+vN8HgkE8YX3OzG0fMLJtu4UUxk3cgFMcQgKXpw+APFMT5m2pIT4UA7k0g66kh5HSyZTL8m07tBm8wmnE0lJBt6oyeW3czSdO1SVPgLCuRKbHOCcmU0ebconyN596gqLZwa+pQMRKyaaafNXHLZA9JN0fu4ZbrENdEEtTndgJXQOaIgS6FgjZ9QBFYJCoAe5qgWWAAlLttKFFzK617OJvmLYpZVdJTq19CXuNJgApZxgq3xDN73HrQqcZx+M/WgvXD8E0aWI0LAiR74WegnMy839MnBf3MpOgX6HBNTXASRzfuVilR4fZNNw6NeUMkc5JBMX1fHAqqmbitx+eZy0Sysc4/B+3MfReLc0N864HufkVMuKYCKRxWUjM/wDqnUaMDSS+lXgSVkbu9gzSKcjgU3maRZjuvZ7vPAtnRLXOMH9TiLm41g36lydvPesjeZR4ph7wUHtdaaJ3RijR6+MRD8QRDNMoeV+hWrhaL1zqwuixVTgAJx4QD2lGfjPVxMY83epOFJiNF7bfURenCQXPqU9xIuRHHAtQqqHI7VWmHd7z+owaw1iO5Vqiy+FK9fS02sgjWFuZTfI2KDrbnRV1y9Toc+N/SBEfMqttJWB+oPo+4M5tnqpUEaQOr4ks+eZVPZduMwRO12YY0rPsgBvvti9/fk6pg1JaxbCnex2/pna/WPePoXUEsDBBQAAAAIADtcVV0CQT2qzQIAAKYFAAAPAAAAT0VCUFMvY2gzLnhodG1shVRNa9wwEL3nVwx76cWxG3ppiuMQSqGFEgpt6Vm2Zm1hWSMkOc7++85Iu9lsKPSwsNZ8vXnvSe3982LhCUM05O52N/X7HaAbSBs33u3WtL/+uLvvrtopcRqnuni3m1Lyn5pm27Z6+1BTGJub29vb5llydl07odJdm0yy2H0142T5l2IFjhJGUE5DTzQvKsyxbUpa25SinvSBG9z8v45zrlrf/QgYS2wiq0HBRkFDIohocUhgUgVpQgc6qFH+wcTJlvtxzkC8dz70KkY1IhxohU25VMMDLOhWUN6jChE2kyZo+zOutum7Sk4eGd3Lx3cGCL+9fGdQfPSZ/EG+67bxGfIv5f/RiQKQQ6B9xjOQpTWAphTB7DOsiCihpRLk06n4NfoaHnE7hyKsEV93ky7eDDNqsCryjoJEOcBnExPL/bork8NEMSOG+5T6CpTWghO1Scy0yFJxzB8yyxwIuDCj/MX0WfsaiQoIlqfwaOMypiNzomghYAy0eo5npjPqSflU9DlAj5YYYaIq85pYF0EslCU1s5yyXK+GWaAzgBPZbzQhjy7m7v1qbLpmMNoMia2vwqGCbTLDJBaai+K0JiHIOMbhMPGyzmFOr+Fbgr1x+thNMdV7CosIWExYQSRoTbehZ4lNB3GiLZYT9PkkO8R0Phg3sI0xXuadzuW0rM28r07zXU1KJvsp8NzIzM4oBSNlCiS/hi+KV1lQuaysikVptXiLpZkwNvBhEhdANIuxKrzcHyusyTzPX8Re4S0j34WZFenXlMhBVIeyfa5R7BH91uQ/1VMJZ/a57cy7n2/piFwezpJHZKZ554xtT2tZ2TDb0kjnsgszZTZk0B+J5CFHf53MdYEoS3V8Q05bHPPzbWeAOVQuVXkP3vE00fsBgul7Ljg9CcfCRJ59wfYIov2pO2OTBvHSrsV4eawaFTcoNyZeADsibspb2Mij2v0FUEsDBBQAAAAIADtcVV17VuQTjQMAALIGAAAPAAAAT0VCUFMvY2g0LnhodG1sbVVNr9w2DLznVxB76LvsRx966Uv9NmjwWiBA0wZI/oBs0za7smRI8nr97zuUvJscelqvTIrDmSFdfbiNlq4conj3uns+/rwjdo1vxfWvuzl1h193H87vqiEhDKEuvu6GlKb3p9OyLMfll6MP/en55eXldNOY3bka2LTnKkmyfP7Gt0TGtdRKnKxZq1M5r04lqvbtiozn/wnE4btqOv8zsaOqLgE/mXH6jd7uIfWZuuBHSgPTyG4+0jc8xYE5UbTScqR5+h5S+5TwqFUsmyve6mnSi68SpbZMpvZXJkl7ip5WP1NjHEVmYtMM1AzG9QiK+dVoLhp6rE5TRqq10+IV7O8ZWz2jnosl8FEqjsZaDuQDWRN6DgU1GvJz2nIoLpKaAQhrTguDgTQHB0loMj1OtYXYBG+tnjXeJXGzn6NdNwpmd78p8JWNRQqYHUfUTYNJ1JpwYVcI0CsJ9Qatn1vUS4EmUMtXaUBckH5IjmN8NPtVbpo8AkwHGH45at9vmyoSaTFhpNqa5kLiLgQkyyCJc9hXnsTcA+vgF/eI0azJTMoKAj+5Sw67ME8FbL6kQEaDmdpNxnVShW2bycmFC6Q5Xu6lou9yh6HxxgJ3IJCjtMZ9zkL439rpPR6MFc2AzLEJh9KPJgbYV2kSl6srnw9ucM0fB9mga2AkK7AAJOBWGpO4JT7oi7v4uR9RkcDkoYcvmPrAa7ahJH3lGApBvqIFOWDQogX4w1wKOpjMJ0AzNQGzstdhQJJdCVN3Fb2l8PMXUKIqqs0OYOAmQBMXE7CR7+AsCxtwu3+MmDqy8SNTZ00ZWLgm5xUkxZ/q1nyPcVpVzQXECJDRJCyaB1UfV3DSmdkmlSKsUNBfNrklRVJrYIyld++LV+faCgY8PKnvXIJwcTINlEB5NOmAscAaikCluzjoRSY7BXAYRyPYzwb57PHPTworZsUspzLgWAUhYItko2c6tWVKMiLzi8AJJtuuMw3vVTvQ8B2OzjfDb/j9d45JOgG3D4yFrWbwPrKi+Ii+c3XTG/WUp95TrW7Do3buobs4Y4/0qUMt5emp8PNjWTVA5jGp4Hv6jA2jWWLQog48zISVqFgT9rDaS9PhGu+eMBuYxbbsOq9ue+j05e3PsnWgvTSRBqxP3NLJjYvm2/7KhkWmhPummiYMDvHNNOoESDAFcToB2bd5uAr3GwQkIK40PW71T+UzcdIPzPk/UEsDBBQAAAAIADtcVV1OT6houwEAABkDAAAPAAAAT0VCUFMvY2g1LnhodG1sfVK9ctswDN7zFDgtWVypvi51T1buumVI94yQBEs8U4SOhEzz7QuKTi5dOmiQgO8Xal/ui4Ub+WDYnatj/b0CcgOPxk3napPLt5/VS/fUzqJruurCuZpF1l9NE2Os44+a/dQcT6dTc887VdfOhGPXihFL3TtvHqzpPfoE6EYIwh4napsyb5uy3fOYFHn8D0CHT+3a/Wa+BkBP+4RGMA5kNgF6zzGQfw7A0X3ADiA8kczkIRqZIWV6r5IaD1YORjT2AWYzzVYfCQfoVWBBn0WyPInobqjhD6uMolRqWy3jqNroUlRuquH1krlhsIS++FFuUjMjCh6Ai2o2i7B6c0MhdeRGjmpxps/I0VgLPQEtqyRwdBcQs1DdNuse/42D7BZDyZ8ZL5tisllPvJLTT0HQiU27rcz+6EYXLlugoKU80AgXY7WlLWxobVLlAXXjo74cNrMXj1lWJ5hCVk1fL7WXayRoNp48hVLe11rzu0KeSzwMV61PbaxmuO7k2QfghMqsle70UNLIZ/j33DA6jbHwjUrN02ZGRXte/ukRJR9n7w76pLbUU77ebovtfv/sd1Ai/xBoyl/Y5P+4+wtQSwECFAMUAAAAAAAAACEAb2GrLBQAAAAUAAAACAAAAAAAAAAAAAAAgAEAAAAAbWltZXR5cGVQSwECFAMUAAAACAA7XFVdHgvXyZkAAADdAAAAFgAAAAAAAAAAAAAAgAE6AAAATUVUQS1JTkYvY29udGFpbmVyLnhtbFBLAQIUAxQAAAAIADtcVV0jc0gujgEAACkEAAARAAAAAAAAAAAAAACAAQcBAABPRUJQUy9jb250ZW50Lm9wZlBLAQIUAxQAAAAIADtcVV2SYElPVAEAAFIDAAANAAAAAAAAAAAAAACAAcQCAABPRUJQUy90b2MubmN4UEsBAhQDFAAAAAgAO1xVXY5wVAgRAQAAYQIAAA8AAAAAAAAAAAAAAIABQwQAAE9FQlBTL2NvdmVyLnN2Z1BLAQIUAxQAAAAIADtcVV3WpzLzlgIAAH0EAAAPAAAAAAAAAAAAAACAAYEFAABPRUJQUy9jaDEueGh0bWxQSwECFAMUAAAACAA7XFVdPU+rCtsCAABjBQAADwAAAAAAAAAAAAAAgAFECAAAT0VCUFMvY2gyLnhodG1sUEsBAhQDFAAAAAgAO1xVXQJBParNAgAApgUAAA8AAAAAAAAAAAAAAIABTAsAAE9FQlBTL2NoMy54aHRtbFBLAQIUAxQAAAAIADtcVV17VuQTjQMAALIGAAAPAAAAAAAAAAAAAACAAUYOAABPRUJQUy9jaDQueGh0bWxQSwECFAMUAAAACAA7XFVdTk+oaLsBAAAZAwAADwAAAAAAAAAAAAAAgAEAEgAAT0VCUFMvY2g1LnhodG1sUEsFBgAAAAAKAAoAYgIAAOgTAAAAAA==";
+const SAMPLE_B64 = "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";
 
 /* ---------- storage ---------- */
 const LS = {
@@ -1339,7 +1339,7 @@ const HL_COLORS = {yellow:'#F2C94C', blue:'#86BEE6', pink:'#EE9DB2', orange:'#F2
 const ACCENT = '#1D6A64', ACCENT_DARK = '#7CCFC4';
 
 // font 'original', lineHeight 0 and justify 'book' keep the book's own typography.
-const DEF_SETTINGS = {v:2, theme:'original', fontSize:19, lineHeight:0, font:'original', margins:'normal', justify:'book', turn:'flip', hlColor:'yellow', flow:'paginated', brightness:100, speed:{secs:600, locs:10}, hinted:false, volKeys:true, keepAwake:true};
+const DEF_SETTINGS = {v:3, theme:'original', fontSize:19, lineHeight:0, font:'original', margins:'normal', justify:'left', turn:'flip', hlColor:'yellow', flow:'paginated', brightness:100, speed:{secs:600, locs:10}, hinted:false, volKeys:true, keepAwake:true};
 const SAVED = LS.get('settings', {});
 let S = Object.assign({}, DEF_SETTINGS, SAVED);
 if((SAVED.v||1) < 2 && Object.keys(SAVED).length){ // earlier defaults overrode the book's styles
@@ -1349,10 +1349,12 @@ if((SAVED.v||1) < 2 && Object.keys(SAVED).length){ // earlier defaults overrode 
   S.v = 2;
 }
 if(typeof S.justify==='boolean') S.justify = S.justify ? 'justify' : 'left';
+if((S.v||2) < 3){ if(S.justify==='book') S.justify='left'; S.v = 3; } // justified text on a phone leaves wide gaps; Left is the default now
 if(S.theme==='paper') S.theme='eink'; else if(S.theme==='focus') S.theme='calm'; // retired themes: grey Paper became E-ink, Focus folds into Sepia
 delete S.paper;
 S.speed = Object.assign({}, DEF_SETTINGS.speed, S.speed || {});
 const saveSettings = () => LS.set('settings', S);
+if(Object.keys(SAVED).length && SAVED.v !== S.v) saveSettings(); // keep the migrated settings
 
 let LIB = LS.get('lib', null);
 const saveLib = () => LS.set('lib', LIB);
@@ -1529,17 +1531,17 @@ function mix(a, b, w){ const p=h=>{ const n=parseInt(h.slice(1),16); return [(n>
 function hexA(hex, a){ const n=parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; }
 
 // Styles injected into each chapter. By default only the theme, text size, safety rules and a few
-// readability defaults are applied, so the book's own fonts, spacing and alignment show; each option
-// overrides one of them. The defaults follow common typesetting practice: about 1.5 line spacing,
-// kerning and ligatures on, hyphenation so lines (and justified word gaps) stay even, no lone lines
-// at the top or bottom of a page, and headings that break into even lines.
+// readability defaults are applied, so the book's own fonts, spacing and structure show; each option
+// overrides one of them. The defaults follow common typesetting practice for small screens: about
+// 1.5 line spacing, kerning and ligatures on, ragged-right text with even word spacing and no
+// hyphenation (see alignText), no lone lines at the top or bottom of a page, balanced headings.
 function contentCSS(){
   const t = THEMES[S.theme] || THEMES.original;
   if(R.fixed) return `::selection { background: rgba(29,106,100,.28); }`;
   const out = [];
   out.push(`html { font-size: ${(S.fontSize/16*100).toFixed(2)}% !important; background: ${t.bg} !important; -webkit-text-size-adjust: 100%; }`);
   out.push(`body { background: transparent !important; color: ${t.fg} !important; }`);
-  out.push(`:where(body) { font-family: ${FONTS.charter}; line-height: 1.5; -webkit-hyphens: auto; hyphens: auto; widows: 2; orphans: 2; }`);
+  out.push(`:where(body) { font-family: ${FONTS.charter}; line-height: 1.5; widows: 2; orphans: 2; }`);
   out.push(`body { font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; overflow-wrap: break-word; }`);
   out.push(`p, li, dd, blockquote { hyphenate-limit-chars: 6 3 3; }`);
   out.push(`h1, h2, h3, h4, h5, h6 { text-wrap: balance; }`);
@@ -1553,7 +1555,7 @@ function contentCSS(){
   }
   if(S.lineHeight) out.push(`body, p, li, blockquote, dd, dt, div, td, th { line-height: ${S.lineHeight} !important; }`);
   if(S.justify==='justify') out.push(`p, li, dd, blockquote { text-align: justify !important; -webkit-hyphens: auto !important; hyphens: auto !important; }`);
-  if(S.justify==='left') out.push(`p, li, dd, blockquote { text-align: start !important; }`);
+  if(S.justify==='left') out.push(`body, body * { -webkit-hyphens: none !important; hyphens: none !important; }`);
   if(t.dark){
     out.push(`body *:not(img):not(svg):not(video):not(image) { color: inherit !important; background-color: transparent !important; border-color: ${t.muted} !important; }`);
     out.push(`a, a * { color: ${ACCENT_DARK} !important; }`);
@@ -1575,10 +1577,26 @@ function injectInto(contents){
     if(R.fixed) return;
     const root = doc.documentElement; // hyphenation only works when the language is known
     if(!root.getAttribute('lang') && !root.getAttributeNS('http://www.w3.org/XML/1998/namespace', 'lang')){ const lang = R.book && R.book.package && R.book.package.metadata.language; root.setAttribute('lang', lang || 'en'); }
-    comfortSpacing(doc);
+    comfortSpacing(doc); alignText(doc);
     const fontHref = window.MG_FONT_CSS_URL || (S.font==='literata' ? 'https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&display=swap' : null);
     if(fontHref && !doc.getElementById('mg-font')){ const l=doc.createElement('link'); l.id='mg-font'; l.rel='stylesheet'; l.href=fontHref; doc.head.appendChild(l); }
   }catch(e){}
+}
+// "Left" alignment: wherever the book justifies text, set it ragged-right instead (even word gaps on a
+// narrow screen). Only justified rules change, so centred titles, right-aligned signatures, indents and
+// spacing keep the book's design. The book's own rules are edited in place and restored for "Book".
+function alignText(doc){
+  const value = S.justify === 'left' ? 'start' : 'justify';
+  const fix = st => { if(st.__mgJ === undefined){ if(st.textAlign !== 'justify') return; st.__mgJ = st.getPropertyPriority('text-align'); } st.setProperty('text-align', value, st.__mgJ); };
+  const walk = rules => { for(const r of rules){ if(r.style) fix(r.style); if(r.cssRules) walk(r.cssRules); } };
+  for(const sheet of doc.styleSheets){
+    if(sheet.ownerNode && /^mg-/.test(sheet.ownerNode.id || '')) continue;
+    let rules; try{ rules = sheet.cssRules; }catch(e){ continue; }
+    if(rules) walk(rules);
+  }
+  const inline = doc.__mgInline || (doc.__mgInline = new Set()); // remembered, since a changed style no longer says "justify"
+  doc.querySelectorAll('[style*="justify"]').forEach(el => inline.add(el));
+  inline.forEach(el => fix(el.style));
 }
 // When the book sets cramped line spacing (under about 1.35), open it up to 1.45 so lines don't crowd.
 // Only applies while Line spacing is on "Book"; a chosen spacing always wins.
@@ -1633,6 +1651,7 @@ async function openBook(item, buf){
   showReaderShell(item);
   R.bookmarks = LS.get('bm:'+item.id, []); R.highlights = LS.get('hl:'+item.id, []); R.locsReady=false; R.loc=null; R.lastT=0; R.lastLoc=null;
   try{
+    nativeReading(true); // hides the system bars first, so the book is laid out for the full screen
     R.book = ePub(buf); await R.book.ready;
     R.fixed = R.book.package.metadata.layout === 'pre-paginated'; reader.classList.toggle('fixed', R.fixed); R.rtl = R.book.package.metadata.direction === 'rtl';
     R.book.loaded.navigation.then(nav => { R.toc = nav.toc || []; R.flat=[]; (function walk(items, lvl){ (items||[]).forEach(it => { R.flat.push({label:(it.label||'').trim(), href:it.href, lvl}); walk(it.subitems, lvl+1); }); })(R.toc, 0); }).catch(()=>{});
@@ -2050,8 +2069,7 @@ function onSelected(cfiRange, contents){
   if(!text) return;
   let rect=null; try{ rect = contents.range(cfiRange).getBoundingClientRect(); }catch(e){}
   R.pending = {cfiRange, text, contents, existing:null};
-  // On Android the system selection toolbar carries the reader's actions, so no second bar is shown.
-  if(!(NATIVE() && NATIVE().selectionMenu)) showPop(rect ? offsetRect(rect, contents) : null);
+  showPop(rect ? offsetRect(rect, contents) : null);
   if(text.length <= 60){ const p = dictPrepare(text); if(p) p.catch(() => {}); } // ready before Look Up is tapped
 }
 function offsetRect(rect, contents){ const fr=frameRectOf(contents); return {left:rect.left+fr.left, right:rect.right+fr.left, top:rect.top+fr.top, bottom:rect.bottom+fr.top}; }
@@ -2072,7 +2090,7 @@ function showPop(rect){
   const cx = rect ? (rect.left + rect.right) / 2 : rr.width / 2;
   const left = clamp(cx - pw / 2, 12, Math.max(12, rr.width - pw - 12));
   let y;
-  if(NATIVE() && !NATIVE().selectionMenu && rect && !p.existing){ y = rect.bottom + 14; if(y + ph > rr.height - 8) y = rect.top - ph - 64; } // Android's own bar sits above
+  if(NATIVE() && !NATIVE().quietSelection && rect && !p.existing){ y = rect.bottom + 14; if(y + ph > rr.height - 8) y = rect.top - ph - 64; } // Android's own bar sits above
   else { y = rect ? rect.top - ph - 12 : rr.height / 2; if(y < 56) y = rect ? rect.bottom + 12 : 56; }
   y = clamp(y, 8, rr.height - ph - 8);
   pop.style.left = left + 'px'; pop.style.top = y + 'px';
@@ -2341,32 +2359,6 @@ window.MG_openFile = async function(f){
   }catch(e){ toast(e.message || "Couldn't open that file.", 4500); }
 };
 window.MG_toast = toast;
-// Actions chosen from Android's selection toolbar: highlight, note, lookup, copy, share.
-function currentSelection(){
-  for(const c of (R.rendition ? R.rendition.getContents() : [])){
-    try{ const sel = c.window.getSelection(); const text = String(sel).trim();
-      if(text && sel.rangeCount) return {cfiRange: c.cfiFromRange(sel.getRangeAt(0)), text, contents: c, existing: null}; }catch(e){}
-  }
-  return null;
-}
-window.MG_selectionAction = function(action){
-  if(reader.hidden || !R.rendition) return;
-  const live = currentSelection();
-  if(!live){ // text selected outside the book, e.g. in the dictionary sheet
-    const text = String(window.getSelection()).trim(); if(!text) return;
-    if(action === 'copy'){ copyText(text); window.getSelection().removeAllRanges(); }
-    else if(action === 'lookup'){ window.getSelection().removeAllRanges(); lookup(text); }
-    else if(action === 'share'){ const n = NATIVE(); (n && n.share ? n.share(text, R.item.title) : copyText(text)).catch(() => {}); window.getSelection().removeAllRanges(); }
-    else toast('Select text in the book to highlight it.', 2200);
-    return;
-  }
-  R.pending = live;
-  const p = R.pending;
-  if(action === 'highlight') return setHighlight(S.hlColor || 'yellow');
-  if(action === 'share'){ shareQuote().finally(() => { clearSelection(); R.pending = null; }); return; }
-  if(action === 'note' || action === 'lookup' || action === 'copy') return popAction(action);
-};
-
 function boot(){
   if(window.MG_FONT_CSS_URL && !document.getElementById('mg-font')){ const l=document.createElement('link'); l.id='mg-font'; l.rel='stylesheet'; l.href=window.MG_FONT_CSS_URL; document.head.appendChild(l); }
   applyReaderTheme();

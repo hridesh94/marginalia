@@ -31,7 +31,8 @@ Keep a backup of the keystore. If it's lost, future builds can't update the inst
 - Volume keys turn pages, and the screen stays on while a book is open. Both can be switched off in Text & Display → More options.
 - An offline English dictionary: `scripts/build-dict.mjs` turns WordNet 3.1 into small JSON files under `www/dict/` (about 17 MB on disk, 6 MB inside the APK), so a lookup reads only a few hundred kilobytes. WordNet's licence ships alongside the data.
 - Speak aloud uses the phone's own text-to-speech voices, which work offline.
-- One selection menu: while a book is open, `ReaderWebView` replaces Android's own text-selection toolbar (Copy, Translate, Select all…) with Marginalia's Highlight, Note, Look Up, Copy and Share, so two menus never compete for the same spot.
+- Full screen while reading: the status and navigation bars are hidden while a book is open (a swipe from the edge shows them briefly) and come back in the library.
+- One selection bar: while a book is open, `ReaderWebView` keeps Android's text-selection toolbar (Copy, Translate, Select all…) from appearing, so only Marginalia's bar with highlight colours, Note, Copy and Look Up shows. Text fields keep Android's menu, so Paste still works.
 - Native share and clipboard, and status-bar icons that follow the reading theme.
 
 ## Building locally

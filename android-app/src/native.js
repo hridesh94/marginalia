@@ -46,12 +46,8 @@ if (Capacitor.isNativePlatform()) {
     const handled = window.MG_back ? window.MG_back() : false;
     if (!handled) App.minimizeApp();
   });
-  // Android's selection toolbar shows the reader's actions (Highlight, Note, Look Up, Copy, Share);
-  // the reader's own floating bar is then only used for existing highlights.
-  ReaderBridge.getInfo().then((info) => { if (info && info.selectionMenu) window.MG_NATIVE.selectionMenu = true; }).catch(() => {});
-  ReaderBridge.addListener('selectionAction', (e) => {
-    if (window.MG_selectionAction) window.MG_selectionAction(e && e.action);
-  });
+  // While reading, Android's selection toolbar is suppressed and the reader's own bar (colours, Note, Copy, Look Up) is used.
+  ReaderBridge.getInfo().then((info) => { if (info && info.quietSelection) window.MG_NATIVE.quietSelection = true; }).catch(() => {});
   ReaderBridge.addListener('volumeKey', (e) => {
     if (window.MG_volumeKey) window.MG_volumeKey(e && e.direction);
   });

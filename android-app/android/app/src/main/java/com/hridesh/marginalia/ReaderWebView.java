@@ -1,109 +1,112 @@
 package com.hridesh.marginalia;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.PopupMenu;
 import com.getcapacitor.CapacitorWebView;
 
 /**
- * Capacitor's WebView, with one change: while a book is open, the text-selection toolbar shows
- * Marginalia's actions (Highlight, Note, Look Up, Copy, Share) instead of Android's defaults,
- * so there is a single menu rather than two competing ones. The reader handles each action.
+ * Capacitor's WebView, with one change: while a book is open, Android's text-selection toolbar
+ * (Copy, Translate, Select all…) is not shown. The selection and its handles stay, and the reader
+ * shows its own bar with highlight colours, Note, Copy and Look Up instead.
  * Text fields (the note editor, search) keep Android's normal menu, so Paste is still there.
  */
 public class ReaderWebView extends CapacitorWebView {
 
     static volatile boolean installed = false;
 
-    private static final int ID_HIGHLIGHT = 0x4d01;
-    private static final int ID_NOTE = 0x4d02;
-    private static final int ID_LOOKUP = 0x4d03;
-    private static final int ID_COPY = 0x4d04;
-    private static final int ID_SHARE = 0x4d05;
-
     public ReaderWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         installed = true;
     }
 
-    private boolean useReaderMenu() {
+    private boolean quietSelection() {
         return ReaderBridgePlugin.readerMenuEnabled && !onCheckIsTextEditor();
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback, int type) {
-        if (useReaderMenu()) return super.startActionMode(new ReaderCallback(callback), type);
+        // The WebView keeps the selection only while it holds an action mode, so hand it one that shows nothing.
+        if (quietSelection()) return new SilentActionMode(getContext(), this);
         return super.startActionMode(callback, type);
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        if (useReaderMenu()) return super.startActionMode(new ReaderCallback(callback));
+        if (quietSelection()) return new SilentActionMode(getContext(), this);
         return super.startActionMode(callback);
     }
 
-    private static final class ReaderCallback extends ActionMode.Callback2 {
+    /** An action mode with no toolbar. The WebView calls these methods while the selection changes; none needs to do anything. */
+    private static final class SilentActionMode extends ActionMode {
 
-        private final ActionMode.Callback inner;
+        private final Context context;
+        private final Menu menu;
 
-        ReaderCallback(ActionMode.Callback inner) {
-            this.inner = inner;
-        }
-
-        private static void fill(Menu menu) {
-            menu.clear();
-            menu.add(Menu.NONE, ID_HIGHLIGHT, 1, "Highlight");
-            menu.add(Menu.NONE, ID_NOTE, 2, "Note");
-            menu.add(Menu.NONE, ID_LOOKUP, 3, "Look Up");
-            menu.add(Menu.NONE, ID_COPY, 4, "Copy");
-            menu.add(Menu.NONE, ID_SHARE, 5, "Share");
+        SilentActionMode(Context context, View anchor) {
+            this.context = context;
+            this.menu = new PopupMenu(context, anchor).getMenu();
         }
 
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Let the WebView set up its selection state first, then replace its items with ours.
-            boolean ok = inner.onCreateActionMode(mode, menu);
-            fill(menu);
-            return ok;
+        public int getType() {
+            return ActionMode.TYPE_FLOATING;
         }
 
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            inner.onPrepareActionMode(mode, menu);
-            fill(menu);
-            return true;
+        public void setTitle(CharSequence title) {}
+
+        @Override
+        public void setTitle(int resId) {}
+
+        @Override
+        public void setSubtitle(CharSequence subtitle) {}
+
+        @Override
+        public void setSubtitle(int resId) {}
+
+        @Override
+        public void setCustomView(View view) {}
+
+        @Override
+        public void invalidate() {}
+
+        @Override
+        public void invalidateContentRect() {}
+
+        @Override
+        public void hide(long duration) {}
+
+        @Override
+        public void finish() {}
+
+        @Override
+        public Menu getMenu() {
+            return menu;
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            String action;
-            switch (item.getItemId()) {
-                case ID_HIGHLIGHT: action = "highlight"; break;
-                case ID_NOTE: action = "note"; break;
-                case ID_LOOKUP: action = "lookup"; break;
-                case ID_COPY: action = "copy"; break;
-                case ID_SHARE: action = "share"; break;
-                default: return inner.onActionItemClicked(mode, item);
-            }
-            ReaderBridgePlugin plugin = ReaderBridgePlugin.get();
-            if (plugin != null) plugin.onSelectionAction(action);
-            return true; // the reader clears the selection once it has used it, which closes this toolbar
+        public CharSequence getTitle() {
+            return null;
         }
 
         @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            inner.onDestroyActionMode(mode);
+        public CharSequence getSubtitle() {
+            return null;
         }
 
         @Override
-        public void onGetContentRect(ActionMode mode, View view, Rect outRect) {
-            // Keeps the toolbar placed next to the selected text.
-            if (inner instanceof ActionMode.Callback2) ((ActionMode.Callback2) inner).onGetContentRect(mode, view, outRect);
-            else super.onGetContentRect(mode, view, outRect);
+        public View getCustomView() {
+            return null;
+        }
+
+        @Override
+        public MenuInflater getMenuInflater() {
+            return new MenuInflater(context);
         }
     }
 }
