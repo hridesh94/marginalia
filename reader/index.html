@@ -253,6 +253,9 @@ textarea.nt{width:100%;box-sizing:border-box;min-height:110px;border:1px solid v
 #confirm .box button.c:active{background:var(--fill)}
 #confirm .box button.d{background:var(--danger);color:var(--danger-fg)}
 #picker{display:none}
+/* App chrome is not text: a long press (e.g. on a cover, which opens the Remove dialog under the finger)
+   must not select words or bring up Android's text menu. Book text, definitions and notes stay selectable. */
+#library,#confirm,#importcard,#toast,.chrome,.card,.rounds,.sh,.sub,.seg,.ctl,.themes,.tdesc,.opt,#pop,.list{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #importcard{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);width:min(420px,calc(100vw - 32px));box-sizing:border-box;background:var(--surface);border:1px solid var(--sep);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 12px;align-items:center;z-index:30}
 #importcard .ic-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
 #importcard .ic-tx b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1369,8 +1372,10 @@ let toastT;
 function toast(msg, ms=2600){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), ms); }
 function confirmBox(title, body, okLabel, onOk){
   const c=$('#confirm'); c.innerHTML = `<div class="box" role="alertdialog" aria-labelledby="cf-t"><h3 id="cf-t">${esc(title)}</h3><p>${esc(body)}</p><div class="row"><button type="button" class="c">Keep</button><button type="button" class="d">${esc(okLabel)}</button></div></div>`;
-  c.hidden=false; c.onclick = e => { if(e.target===c) c.hidden=true; };
-  $('.d',c).onclick = () => { c.hidden=true; onOk(); }; $('.c',c).onclick = () => { c.hidden=true; };
+  c.hidden=false; try{ window.getSelection().removeAllRanges(); }catch(e){}
+  const opened = Date.now(); // the press that opened the dialog may still be lifting off; ignore it
+  c.onclick = e => { if(Date.now() - opened > 400 && e.target===c) c.hidden=true; };
+  $('.d',c).onclick = () => { if(Date.now() - opened < 400) return; c.hidden=true; onOk(); }; $('.c',c).onclick = () => { if(Date.now() - opened < 400) return; c.hidden=true; };
 }
 
 /* ---------- library ---------- */
@@ -1821,6 +1826,8 @@ function ensureGhost(){
     fr.setAttribute('sandbox','allow-same-origin'); fr.setAttribute('aria-hidden','true'); fr.tabIndex=-1; fr.setAttribute('scrolling','no');
     fr.style.width = v.iframe.style.width || (v.iframe.offsetWidth+'px'); fr.style.height = v.iframe.style.height || (v.iframe.offsetHeight+'px');
     await new Promise(res => { const to=setTimeout(res, 1500); fr.onload=() => { clearTimeout(to); res(); }; fr.srcdoc=html; gclip.replaceChildren(fr); });
+    // alignText edits the book's style rules in place, which a serialized copy doesn't carry; apply it again
+    try{ if(fr.contentDocument && !R.fixed) alignText(fr.contentDocument); }catch(e){}
     try{ const d=fr.contentDocument; if(d && d.fonts) await Promise.race([d.fonts.ready, new Promise(r=>setTimeout(r,800))]);
       const imgs = d ? Array.from(d.images).filter(i=>!i.complete) : []; if(imgs.length) await Promise.race([Promise.all(imgs.map(i=>i.decode().catch(()=>{}))), new Promise(r=>setTimeout(r,800))]); }catch(e){}
     if(PT.buildKey!==key) return false;
