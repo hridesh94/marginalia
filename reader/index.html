@@ -1557,6 +1557,7 @@ async function openBook(item, buf){
     $('#loading').hidden = true;
     item.opened = Date.now(); saveLib();
     nativeReading(true);
+    if(DICT.base) idle(() => dictExc());
     loadLocations();
     showChrome(true, 2200);
     if(!S.hinted){ S.hinted=true; saveSettings(); const z=$('#zones'); z.classList.add('show'); setTimeout(()=>z.classList.remove('show'), 2600); }
@@ -1962,6 +1963,7 @@ function onSelected(cfiRange, contents){
   let rect=null; try{ rect = contents.range(cfiRange).getBoundingClientRect(); }catch(e){}
   R.pending = {cfiRange, text, contents, existing:null};
   showPop(rect ? offsetRect(rect, contents) : null);
+  if(text.length <= 60){ const p = dictPrepare(text); if(p) p.catch(() => {}); } // ready before Look Up is tapped
 }
 function offsetRect(rect, contents){ const fr=frameRectOf(contents); return {left:rect.left+fr.left, right:rect.right+fr.left, top:rect.top+fr.top, bottom:rect.bottom+fr.top}; }
 function onMarkClick(h, e){
@@ -2020,7 +2022,7 @@ async function shareQuote(){
    w/<xx>.json maps each word to its meaning ids, m/<n>.json holds 1000 meanings each, exc.json lists irregular
    forms. A lookup reads one word file and one or two meaning files. Without these files (the web preview),
    the sheet uses an online dictionary instead. */
-const DICT = {base: window.MG_DICT_BASE || null, words:new Map(), chunks:new Map(), exc:null, chunk:1000, stack:[], ctx:null, cur:null, seq:0};
+const DICT = {base: window.MG_DICT_BASE || null, words:new Map(), chunks:new Map(), exc:null, chunk:1000, stack:[], ctx:null, cur:null, seq:0, prep:new Map()};
 const POS_NAME = {n:'noun', v:'verb', a:'adjective', r:'adverb'};
 const SENSES_SHOWN = 3;
 const STOP = new Set('a an the of to in on at by for and or but is are was were be been it its as with from that this these those his her their our your my he she they we you i not no so if'.split(' '));
@@ -2078,6 +2080,20 @@ async function dictMeanings(groups){
   const loaded = new Map(await Promise.all(need.map(async c => [c, await dictChunk(c)])));
   return groups.map(([pos, ids]) => ({pos, senses: ids.map(i => loaded.get(Math.floor(i / DICT.chunk))[i % DICT.chunk]).filter(m => m && m[0])}));
 }
+// Starts (or reuses) the full lookup for a word: called when text is selected and for on-screen synonyms,
+// so the answer is usually ready before Look Up or the synonym is tapped.
+function dictPrepare(raw){
+  if(!DICT.base) return null;
+  const key = dictNormalize(raw); if(!key) return null;
+  if(!DICT.prep.has(key)){
+    const job = (async () => { const res = await dictFind(raw); return {res, groups: res.found.length ? await dictMeanings(res.found[0].groups) : null}; })();
+    job.catch(() => DICT.prep.delete(key));
+    DICT.prep.set(key, job);
+    if(DICT.prep.size > 60) DICT.prep.delete(DICT.prep.keys().next().value);
+  }
+  return DICT.prep.get(key);
+}
+const idle = fn => (window.requestIdleCallback ? requestIdleCallback(fn, {timeout:800}) : setTimeout(fn, 120));
 // The sentence a selection came from, kept with saved words.
 function sentenceAround(p){
   try{
@@ -2119,9 +2135,11 @@ async function lookup(raw, opts={}){
   if(openSheetId !== 'dict') openSheet('dict');
   const seq = ++DICT.seq;
   if(!DICT.base) return lookupOnline(dictNormalize(raw).split(' ')[0] || raw, false);
-  box.innerHTML = `<div class="ph">Looking up…</div>`;
-  let res;
-  try{ res = await dictFind(raw); }catch(e){ return lookupOnline(dictNormalize(raw).split(' ')[0] || raw, true); }
+  box.innerHTML = '';
+  const slow = setTimeout(() => { if(seq === DICT.seq && !box.firstChild) box.innerHTML = `<div class="from">Looking up…</div>`; }, 180);
+  let res, prepared;
+  try{ prepared = await dictPrepare(raw); res = prepared.res; }catch(e){ clearTimeout(slow); return lookupOnline(dictNormalize(raw).split(' ')[0] || raw, true); }
+  clearTimeout(slow);
   if(seq !== DICT.seq) return;
   const back = DICT.stack.length ? `<button type="button" class="dback" id="dback">${ICON_BACK}${esc(DICT.stack[DICT.stack.length-1])}</button>` : '';
   if(!res.found.length){
@@ -2133,8 +2151,7 @@ async function lookup(raw, opts={}){
     wireDict(box); return;
   }
   const main = res.found[0];
-  const groups = await dictMeanings(main.groups);
-  if(seq !== DICT.seq) return;
+  const groups = prepared.groups;
   const firstDef = (groups[0] && groups[0].senses[0] || [''])[0];
   DICT.cur = {word: main.word, def: firstDef, pos: groups[0] ? POS_NAME[groups[0].pos] : ''};
   const ctx = DICT.ctx || {};
@@ -2161,6 +2178,8 @@ async function lookup(raw, opts={}){
   };
   $$('.more', box).forEach(b => b.onclick = () => { b.closest('.dg').querySelectorAll('[data-more]').forEach(li => li.hidden = false); b.remove(); });
   $('.sb', $('#sh-dict')).scrollTop = 0;
+  // Get the visible similar words ready, so tapping one is instant.
+  idle(() => $$('.chip[data-w]', box).slice(0, 10).forEach(c => { const p = dictPrepare(c.dataset.w); if(p) p.catch(() => {}); }));
 }
 function wireDict(box){
   $$('.chip[data-w]', box).forEach(c => c.onclick = () => { if(DICT.cur) DICT.stack.push(DICT.cur.word); lookup(c.dataset.w, {push:true}); });
