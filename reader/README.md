@@ -6,7 +6,7 @@ A single-file, mobile-first ebook reader (`index.html`). It renders books with e
 - **The book's own design by default.** Publisher fonts, sizes, spacing, alignment and headings are left alone; Options overrides font, line spacing and alignment one at a time ("Book" restores the original). Fixed-layout books (PDF, comics, fixed-layout EPUB) render as printed and centred. Right-to-left books turn the right way.
 - **Page turns.** Flip (default), Slide, Fade or None. Swipes follow the finger and can be cancelled. Reduced-motion settings switch to Fade.
 - **Offline dictionary.** Look Up uses WordNet 3.1 bundled with the Android app: base forms and irregular forms ("wept" finds "weep"), phrases, examples, tappable similar words, speak aloud, and a Words list of saved words with the sentence each came from. Without the bundled files (a plain web copy) it falls back to an online dictionary.
-- **Chrome follows Apple Books; reading features follow Kindle:** tap zones, pages left in chapter, time-left estimate, four-colour highlights with notes, dictionary lookup, bookmark ribbon, resume to the exact position. Six themes: Original, Quiet, Paper, Bold, Calm, Focus.
+- **Chrome follows Apple Books; reading features follow Kindle:** tap zones, pages left in chapter, time-left estimate, four-colour highlights with notes, dictionary lookup, bookmark ribbon, resume to the exact position. Six themes: Original, Quiet, Paper, Bold, Calm, Focus, with an optional paper texture (Grain or Fibre) drawn once on a canvas and laid over the page as a single seamless layer.
 
 The MOBI (foliate-js), PDF (pdf.js) and zlib (fflate) converters load on demand from jsDelivr; the Android build bundles them instead.
 

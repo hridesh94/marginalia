@@ -29,6 +29,8 @@ public class ReaderBridgePlugin extends Plugin {
 
     private static volatile ReaderBridgePlugin instance;
     static volatile boolean volumeKeysEnabled = false;
+    /** While a book is open, the selection toolbar shows the reader's own actions (see ReaderWebView). */
+    static volatile boolean readerMenuEnabled = false;
 
     private Uri pendingUri;
 
@@ -92,6 +94,7 @@ public class ReaderBridgePlugin extends Plugin {
         final boolean volumeKeys = Boolean.TRUE.equals(call.getBoolean("volumeKeys", false));
         final boolean keepAwake = Boolean.TRUE.equals(call.getBoolean("keepAwake", false));
         volumeKeysEnabled = reading && volumeKeys;
+        readerMenuEnabled = reading;
         getActivity()
             .runOnUiThread(() -> {
                 if (reading && keepAwake) {
@@ -101,6 +104,20 @@ public class ReaderBridgePlugin extends Plugin {
                 }
             });
         call.resolve();
+    }
+
+    /** Tells the reader whether the single selection menu is available on this device. */
+    @PluginMethod
+    public void getInfo(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("selectionMenu", ReaderWebView.installed);
+        call.resolve(ret);
+    }
+
+    void onSelectionAction(String action) {
+        JSObject data = new JSObject();
+        data.put("action", action);
+        notifyListeners("selectionAction", data);
     }
 
     void onVolumeKey(String direction) {
