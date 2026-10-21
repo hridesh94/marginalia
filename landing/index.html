@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Marginalia for Android</title>
-<meta name="description" content="Marginalia is a calm ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's own typography, and turns pages like paper.">
+<title>Marginalia · Apple-inspired ebook reader for Android</title>
+<meta name="description" content="Marginalia is an Apple-inspired ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's original design, and turns pages like paper.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Marginalia for Android">
-<meta property="og:description" content="Marginalia is a calm ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's own typography, and turns pages like paper.">
+<meta property="og:title" content="Marginalia · Apple-inspired ebook reader for Android">
+<meta property="og:description" content="Marginalia is an Apple-inspired ebook reader for Android. It opens EPUB, Kindle, PDF and comic files, keeps each book's original design, and turns pages like paper.">
 <meta property="og:url" content="https://hridesh94.github.io/marginalia/">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 12 84 84'%3E%3Crect x='12' y='12' width='84' height='84' rx='18' fill='%231C1C1E'/%3E%3Crect x='35' y='29' width='38' height='50' rx='3.2' fill='%23F4F1E8'/%3E%3Cpath d='M64 29h6v15l-3-2.6-3 2.6z' fill='%230A84FF'/%3E%3C/svg%3E">
@@ -64,7 +64,7 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 .hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:center;padding-block:40px 72px}
 .hero h1{font-size:clamp(40px,6.2vw,68px);line-height:1.04;font-weight:500;max-width:12ch}
 .hero h1 em{font-style:italic;font-weight:400}
-.lede{font-size:clamp(18px,2vw,20px);color:var(--muted);max-width:34rem;margin-top:22px}
+.lede{font-size:clamp(18px,2vw,20px);color:var(--muted);max-width:34rem;margin-top:26px}
 .lede b{color:var(--ink);font-weight:600}
 .cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:32px}
 .cta .alt{font-size:15px}
@@ -169,9 +169,8 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
   <section class="hero">
     <div class="wrap">
       <div>
-        <p class="label">Ebook reader for Android</p>
-        <h1 style="margin-top:14px">Every book you own, <em>set the way it was made.</em></h1>
-        <p class="lede">Marginalia opens <b>EPUB, Kindle, PDF and comic</b> files on your phone, keeps each publisher's own typography, and turns pages like paper. Your library stays on your phone.</p>
+        <h1>Apple-inspired ebook reader <em>for Android</em></h1>
+        <p class="lede">Marginalia brings the clean, quiet design of Apple Books to Android. It opens <b>EPUB, Kindle, PDF and comic</b> files, shows each book the way its publisher designed it, and turns pages like paper. Your books stay on your phone.</p>
         <div class="cta">
           <a class="btn btn-primary" href="https://github.com/hridesh94/marginalia/releases/latest/download/Marginalia.apk" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
@@ -197,45 +196,45 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
     <div class="wrap">
       <div class="sec-head">
         <p class="label">Formats</p>
-        <h2 id="formats-h">Open the files you already have</h2>
-        <p>Marginalia looks inside each file to work out what it is, so a book saved as .zip or with no extension still opens. Anything that isn't EPUB is converted once, when you add it.</p>
+        <h2 id="formats-h">Opens the books you already have</h2>
+        <p>Marginalia reads each file's contents to work out what it is, so a book named .zip or with no extension still opens. Anything that isn't an EPUB is converted once, when you add it.</p>
       </div>
       <div class="formats">
-        <div class="fmt"><code>.epub</code><p>Opened as published, with embedded fonts decoded so they display.</p></div>
+        <div class="fmt"><code>.epub</code><p>Opens exactly as published, including the publisher's embedded fonts.</p></div>
         <div class="fmt"><code>.mobi .azw3</code><p>DRM-free Kindle books, with their images, links and contents.</p></div>
-        <div class="fmt"><code>.pdf</code><p>Pages exactly as printed, with text you can search and highlight.</p></div>
-        <div class="fmt"><code>.cbz</code><p>Comics page by page, with manga read right to left.</p></div>
-        <div class="fmt"><code>.fb2 .fbz</code><p>FictionBook files, including Cyrillic ones, with notes and poems kept.</p></div>
-        <div class="fmt"><code>.txt</code><p>Plain text split into chapters at headings like "Chapter I".</p></div>
+        <div class="fmt"><code>.pdf</code><p>Pages look exactly as printed, and you can still search and highlight the text.</p></div>
+        <div class="fmt"><code>.cbz</code><p>Comics one page at a time. Manga reads right to left.</p></div>
+        <div class="fmt"><code>.fb2 .fbz</code><p>FictionBook files, including Cyrillic ones, with footnotes and poems intact.</p></div>
+        <div class="fmt"><code>.txt</code><p>Plain text, split into chapters wherever a heading like “Chapter I” appears.</p></div>
         <div class="fmt"><code>.html</code><p>Saved web pages and stories, with their own styles and images.</p></div>
-        <div class="fmt"><code>Open with</code><p>Tap a book in your Files app or a download and choose Marginalia.</p></div>
+        <div class="fmt"><code>Open with</code><p>Tap a book in your Files app or downloads, then choose Marginalia.</p></div>
       </div>
-      <div class="caveat"><p>Books protected with DRM can't be opened. That includes books bought from the Kindle store and Kindle KFX files. DRM-free Kindle files, such as ones from free libraries, work fine.</p></div>
+      <div class="caveat"><p>Books with DRM can't be opened. This includes books bought from the Kindle store and Kindle KFX files. DRM-free Kindle files, like ones from free libraries, work fine.</p></div>
     </div>
   </section>
 
   <section class="band" aria-labelledby="features-h">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">Reading</p>
-        <h2 id="features-h">Quiet on the page, thorough underneath</h2>
-        <p>The screen shows only the text until you ask for more. A tap in the middle brings back the menu, the contents and your place in the book.</p>
+        <p class="label">Features</p>
+        <h2 id="features-h">Designed like Apple Books, built for Android</h2>
+        <p>The page shows only the text until you need more. Tap the middle of the screen to bring back the menu, the contents and your progress.</p>
       </div>
       <dl class="notes">
         <dt>Page turns</dt>
-        <dd><h3>Pages flip like paper</h3><p>Tap the right or left edge, or drag the page and it follows your finger. Let go early to put it back. Slide, Fade and None are there if you prefer them.</p></dd>
+        <dd><h3>Pages turn like paper</h3><p>Tap the edge of the screen, or drag the page and it follows your finger. Let go early and it settles back into place. You can also choose Slide, Fade or no animation.</p></dd>
         <dt>Typography</dt>
-        <dd><h3>The book's own design</h3><p>Publisher fonts, spacing, alignment and headings show as they were made. Change the typeface, line spacing or alignment one at a time, and choose <b>Book</b> to go back.</p></dd>
+        <dd><h3>Every book looks the way it was designed</h3><p>Marginalia keeps the publisher's fonts, spacing, alignment and headings. You can still change the typeface, line spacing or alignment, one setting at a time. Choose <b>Book</b> to go back to the original.</p></dd>
         <dt>Themes</dt>
-        <dd><h3>Six page colours</h3><p><b>Original</b>, <b>Quiet</b> for reading in the dark, <b>Paper</b>, <b>Bold</b>, <b>Calm</b> and <b>Focus</b>, plus a dimmer that darkens the page without touching your screen brightness.</p></dd>
+        <dd><h3>Six themes for any light</h3><p><b>Original</b>, <b>Quiet</b> for reading in the dark, <b>Paper</b>, <b>Bold</b>, <b>Calm</b> and <b>Focus</b>. A built-in dimmer darkens the page without changing your screen brightness.</p></dd>
         <dt>Highlights</dt>
-        <dd><h3>Highlights, notes and bookmarks</h3><p>Press and hold to highlight in four colours, add a note, copy a quote or look up a word. A ribbon marks bookmarked pages, and everything is listed by chapter.</p></dd>
+        <dd><h3>Highlights, notes and bookmarks</h3><p>Press and hold any text to highlight it in one of four colours, add a note, copy it or look up a word. Bookmarked pages show a ribbon, and everything you save is listed by chapter.</p></dd>
         <dt>Progress</dt>
-        <dd><h3>Always know where you are</h3><p>See pages left in the chapter, how far through the book you are and an estimate of the time left based on how fast you read. Every book reopens at the exact spot you left it.</p></dd>
+        <dd><h3>Always know where you are</h3><p>See how many pages are left in the chapter, how far you are through the book, and how long it should take to finish at your reading speed. Every book reopens exactly where you stopped.</p></dd>
         <dt>Android</dt>
-        <dd><h3>Made for your phone</h3><p>Turn pages with the volume keys, keep the screen on while you read, search the whole book, and share a highlighted quote to any app.</p></dd>
+        <dd><h3>Made for Android</h3><p>Turn pages with the volume keys, keep the screen on while you read, search the whole book and share a quote to any app.</p></dd>
         <dt>Privacy</dt>
-        <dd><h3>Your books stay on your phone</h3><p>There is no account and nothing is uploaded. The only thing that goes online is a word you choose to look up in the dictionary.</p></dd>
+        <dd><h3>Your books stay on your phone</h3><p>There's no account and nothing is uploaded. The only thing that goes online is a word you look up in the dictionary.</p></dd>
       </dl>
     </div>
   </section>
@@ -245,10 +244,10 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
       <div class="sec-head">
         <p class="label">Install</p>
         <h2 id="install-h">Install in about a minute</h2>
-        <p>Marginalia isn't in the Play Store. The download button always gets the newest version, straight from GitHub, with no account needed.</p>
+        <p>Marginalia isn't on the Play Store. The download button always gives you the newest version, straight from GitHub. No account needed.</p>
       </div>
       <ol class="steps">
-        <li><h3>Download</h3><p>Tap Download for Android on your phone. Marginalia.apk saves to your Downloads.</p></li>
+        <li><h3>Download</h3><p>Tap Download for Android on your phone. Marginalia.apk saves to your Downloads folder.</p></li>
         <li><h3>Open it</h3><p>Tap the finished download, or find Marginalia.apk in your Files app under Downloads.</p></li>
         <li><h3>Allow the install</h3><p>Android asks once whether your browser or Files app may install apps. Allow it, then tap Install.</p></li>
         <li><h3>Add a book</h3><p>Open Marginalia and tap <b>Add book</b>. A short reading guide is already in your library.</p></li>
@@ -266,7 +265,7 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
 
 <footer>
   <div class="wrap">
-    <span>Marginalia. Built on epub.js, pdf.js and foliate-js.</span>
+    <span>Marginalia, an Apple-inspired ebook reader for Android. Built on epub.js, pdf.js and foliate-js.</span>
     <a href="https://github.com/hridesh94/marginalia" target="_blank" rel="noopener">Source on GitHub</a>
   </div>
 </footer>

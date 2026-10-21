@@ -1,6 +1,6 @@
 # Marginalia
 
-A calm ebook reader for Android. It opens EPUB, Kindle MOBI and AZW3, PDF, FB2, CBZ comics, TXT and HTML books, keeps each book's own typography, and turns pages like paper. Your library stays on your phone.
+An Apple-inspired ebook reader for Android. It opens EPUB, Kindle MOBI and AZW3, PDF, FB2, CBZ comics, TXT and HTML books, shows each book the way its publisher designed it, and turns pages like paper. Your books stay on your phone.
 
 **Website:** https://hridesh94.github.io/marginalia/
 
