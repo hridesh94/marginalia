@@ -3,9 +3,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_marginalia"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_marginalia_round"
         android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/AppTheme">
@@ -17,11 +17,6 @@
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
             android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <!-- "Open with Marginalia" for ebooks from Files, Drive, downloads, etc. Many file managers
                  label EPUB/MOBI as application/octet-stream, so that is included; the app checks the content. -->
@@ -66,6 +61,21 @@
             </intent-filter>
 
         </activity>
+
+        <!-- The home-screen entry. It is an alias (rather than MainActivity itself) so launchers that cache icons
+             per entry, like Samsung One UI Home, pick up the current icon. Its name must not change again. -->
+        <activity-alias
+            android:name=".Launcher"
+            android:targetActivity=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:icon="@mipmap/ic_marginalia"
+            android:roundIcon="@mipmap/ic_marginalia_round"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <provider
             android:name="androidx.core.content.FileProvider"
