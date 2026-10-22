@@ -80,7 +80,7 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 .sheet.top{z-index:2;box-shadow:0 0 24px rgba(0,0,0,.18)}
 .sheet .shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to left,rgba(0,0,0,.4),rgba(0,0,0,0) 70%)}
 .sheet .bt{font-family:var(--display);font-style:italic;font-size:11px;color:var(--p-muted);text-align:center;letter-spacing:.01em}
-.sheet .tx{flex:1;margin-top:16px;font-family:var(--display);font-size:14px;line-height:1.58;font-weight:var(--p-weight);text-align:justify;-webkit-hyphens:auto;hyphens:auto;overflow:hidden}
+.sheet .tx{flex:1;margin-top:16px;font-family:var(--display);font-size:14px;line-height:1.58;font-weight:var(--p-weight);text-align:start;-webkit-hyphens:none;hyphens:none;overflow:hidden} /* as in the app: ragged-right, no split words */
 .sheet .tx p+p{margin-top:.7em}
 .sheet .tx p.first::first-line{font-variant:small-caps;letter-spacing:.03em}
 .sheet mark{background:var(--p-mark);color:inherit;border-radius:2px;padding:0 1px}
@@ -108,6 +108,20 @@ section.band>.wrap{padding-block:72px}
 .notes dd h3{font-size:21px;line-height:1.3;margin-bottom:6px}
 .notes dd p{color:var(--muted)}
 .notes dd p b{color:var(--ink);font-weight:600}
+
+/* screenshots */
+.shots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px 24px;margin:0;padding:0;list-style:none}
+.shots figure{margin:0}
+.shots .frame{border-radius:26px;padding:6px;background:#1E1A16;box-shadow:var(--shadow);outline:1px solid var(--rule)}
+.shots img{display:block;width:100%;height:auto;aspect-ratio:600/1298;border-radius:20px;background:var(--surface)}
+.shots figcaption{margin-top:14px;font-size:15px;line-height:1.45;color:var(--muted)}
+.shots figcaption b{display:block;color:var(--ink);font-family:var(--display);font-size:17px;font-weight:500;margin-bottom:2px}
+@media (max-width:900px){ .shots{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:700px){
+  .shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;margin-inline:-16px;padding:4px 16px 14px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .shots::-webkit-scrollbar{display:none}
+  .shots>li{flex:0 0 64%;scroll-snap-align:center}
+}
 
 /* formats */
 .formats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
@@ -189,6 +203,25 @@ footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content
         <p class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v6M13 10a2 2 0 0 1 4 0v2M17 11a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L5 15a2 2 0 0 1 3-2.6l1 1"/></svg>Tap the page, or drag it, to turn it</p>
         <div class="themes" role="group" aria-label="Reading themes" id="themes"></div>
       </div>
+    </div>
+  </section>
+
+  <section class="band" id="look" aria-labelledby="look-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">A look inside</p>
+        <h2 id="look-h">Quiet on the page, close at hand when you need it</h2>
+        <p>Real screens from the app on a phone. The book fills the screen; the controls, your highlights and the dictionary appear only when you ask for them.</p>
+      </div>
+      <ul class="shots">
+        <li><figure><div class="frame"><img src="shots/library.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: Your library. Covers, progress and every book kept on your phone."></div><figcaption><b>Your library</b>Covers, progress and every book kept on your phone.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/reading.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: Just the page. The book’s own layout, set with even word spacing."></div><figcaption><b>Just the page</b>The book’s own layout, set with even word spacing.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/highlight-bar.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: Colour-code as you read. Press and hold, then tap a colour, add a note or look it up."></div><figcaption><b>Colour-code as you read</b>Press and hold, then tap a colour, add a note or look it up.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/dictionary.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: A dictionary built in. Meanings, examples and similar words, all offline."></div><figcaption><b>A dictionary built in</b>Meanings, examples and similar words, all offline.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/text-display.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: Text and Display. Text size, pages or scrolling, a dimmer and six themes."></div><figcaption><b>Text &amp; Display</b>Text size, pages or scrolling, a dimmer and six themes.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/eink.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: E-ink. Low-glare grey paper, crisp ink and instant page turns."></div><figcaption><b>E-ink</b>Low-glare grey paper, crisp ink and instant page turns.</figcaption></figure></li>
+        <li><figure><div class="frame"><img src="shots/night.webp" width="600" height="1298" loading="lazy" decoding="async" alt="Marginalia screenshot: Night. Dim text on near-black for reading in the dark."></div><figcaption><b>Night</b>Dim text on near-black for reading in the dark.</figcaption></figure></li>
+      </ul>
     </div>
   </section>
 
